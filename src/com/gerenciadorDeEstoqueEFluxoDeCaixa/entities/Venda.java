@@ -1,23 +1,23 @@
-package entities;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class Venda {
-	private String codigo;
+	private Integer codigo;
 	private Set<Produto> produtos = new HashSet<>();
 
-	public Venda(String codigo) {
+	public Venda(Integer codigo) {
 		super();
 		this.codigo = codigo;
 	}
 
-	public String getCodigo() {
+	public Integer getCodigo() {
 		return codigo;
 	}
 
-	public void setCodigo(String codigo) {
+	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
 	}
 

@@ -1,4 +1,4 @@
-package services;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,8 +9,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import entities.Produto;
-import entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 
 public class CaixaService {
 
@@ -33,10 +33,10 @@ public class CaixaService {
 
 		for (Produto p : listaCompras) {
 			sb.append(p + "\n");
-			subtotal += p.getValor();
+			subtotal += p.getValor() * p.getQuantidade();
 		}
 		sb.append(String.format("Subtotal: %.2f", subtotal));
-		
+
 		JOptionPane.showMessageDialog(null, sb);
 	}
 
@@ -64,12 +64,12 @@ public class CaixaService {
 		return null;
 	}
 
-	public static String geradorDeCodigoVenda(Set<String> listaCodigos) {
+	public static int geradorDeCodigoVenda(Set<Integer> codigosVendas) {
 
-		String numero = String.valueOf(random.nextInt(9000) + 1000); // um numero de 4 digitos
+		int numero = random.nextInt(9000) + 1000; // um numero de 4 digitos
 
-		while (!listaCodigos.contains(numero) && !listaCodigos.isEmpty()) {
-			numero = String.valueOf(random.nextInt(9000) + 1000);
+		while (!codigosVendas.contains(numero) && !codigosVendas.isEmpty()) {
+			numero = random.nextInt(9000) + 1000;
 		}
 
 		return numero;
@@ -84,10 +84,20 @@ public class CaixaService {
 		}
 		sb.append(venda);
 
-		String diretorioAtual = System.getProperty("user.dir");
-		boolean ok = new File(diretorioAtual + "\\notasfiscais").mkdir();
+		String diretorioPrograma = System.getProperty("user.dir");
+		String nomeNovaPasta = "notasFiscais";
+		String caminhoNovaPasta = diretorioPrograma + File.separator + nomeNovaPasta;
+		File novaPasta = new File(caminhoNovaPasta);
+		
+		
+		if (!novaPasta.exists()) {
+			novaPasta.mkdir();
+		}
+		
+		novaPasta.setWritable(true);
+		
 
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(diretorioAtual + "\\notasfiscais"))) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(novaPasta))) {
 			bw.write(sb.toString());
 
 		} catch (IOException e) {

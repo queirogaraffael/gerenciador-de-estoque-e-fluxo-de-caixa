@@ -1,4 +1,4 @@
-package entities;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
 import java.util.Objects;
 

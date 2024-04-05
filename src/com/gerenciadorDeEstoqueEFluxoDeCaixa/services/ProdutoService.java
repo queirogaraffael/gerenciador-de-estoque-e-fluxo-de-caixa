@@ -1,4 +1,4 @@
-package services;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import entities.Produto;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 
 public class ProdutoService {
 	// Adicionar produtos

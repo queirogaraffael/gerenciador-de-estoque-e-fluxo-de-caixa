@@ -3,12 +3,12 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 import java.util.Objects;
 
 public class Produto {
-	private String codigo;
+	private Integer codigo;
 	private String nome;
 	private Double valor;
 	private Integer quantidade;
 
-	public Produto(String codigo, String nome, Double valor, Integer quantidade) {
+	public Produto(Integer codigo, String nome, Double valor, Integer quantidade) {
 		super();
 		this.codigo = codigo;
 		this.nome = nome;
@@ -16,7 +16,7 @@ public class Produto {
 		this.quantidade = quantidade;
 	}
 
-	public String getCodigo() {
+	public Integer getCodigo() {
 		return codigo;
 	}
 

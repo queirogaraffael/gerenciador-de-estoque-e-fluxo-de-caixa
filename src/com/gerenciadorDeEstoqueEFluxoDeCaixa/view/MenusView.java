@@ -22,9 +22,10 @@ public class MenusView {
 		menu.append("2. Edição\n");
 		menu.append("3. Listagem\n");
 		menu.append("4. Remoção\n");
-		menu.append("5. Listagem de Vendas\n");
-		menu.append("6. Detalhes da Venda\n");
-		menu.append("7. Voltar\n");
+		menu.append("5. Ativar gerador de nota fiscal\n");
+		menu.append("6. Listagem de Vendas\n");
+		menu.append("7. Detalhes da Venda\n");
+		menu.append("8. Voltar\n");
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
 	}
@@ -36,7 +37,8 @@ public class MenusView {
 		menu.append("1. Adicionar\n");
 		menu.append("2. Listar\n");
 		menu.append("3. Finalizar compra\n");
-		menu.append("4. Sair sem finalizar compra\n");
+		menu.append("4. Limpar carrinho\n");
+		menu.append("5. Sair\n");
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
 	}

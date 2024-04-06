@@ -1,16 +1,22 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class Venda {
 	private Integer codigo;
+	private Instant instant;
 	private Set<Produto> produtos = new HashSet<>();
 
-	public Venda(Integer codigo) {
+	public Venda(Integer codigo, Instant instant) {
 		super();
 		this.codigo = codigo;
+		this.instant = instant;
 	}
 
 	public Integer getCodigo() {
@@ -19,6 +25,12 @@ public class Venda {
 
 	public void setCodigo(Integer codigo) {
 		this.codigo = codigo;
+	}
+
+	public String getInstant() {
+		DateTimeFormatter formatoDataHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+		return formatoDataHora.format(zonedDateTime);
 	}
 
 	public Set<Produto> getProdutos() {
@@ -69,7 +81,8 @@ public class Venda {
 
 	@Override
 	public String toString() {
-		return "Venda: codigo = " + codigo + String.format(", valor total %.2f", valorTotal());
+		return "Venda: codigo = " + codigo
+				+ String.format(", valor total %.2f, Data: %s\n", valorTotal(), getInstant());
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controller;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,13 +9,13 @@ import javax.swing.JOptionPane;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CaixaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenuView;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConstantesMenuFluxoCaixa;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenusView;
 
 public class CaixaController {
-	
-	
-	public void fluxoDeCaixa(Set<Produto> produtos, Set<Venda> vendas,  Set<Integer> codigosVendas) {
+
+	public void fluxoDeCaixa(Set<Produto> produtos, Set<Venda> vendas, Set<Integer> codigosVendas) {
 		int opcaoMenuFluxoDeCaixa = 0;
 		Set<Produto> listaCompras = new HashSet<>();
 
@@ -25,18 +26,19 @@ public class CaixaController {
 
 			switch (opcaoMenuFluxoDeCaixa) {
 
-			case 1:
+			case (ConstantesMenuFluxoCaixa.ADICIONAR):
 
-				String codigoProduto = JOptionPane
-						.showInputDialog("Digite o código do produto que você deseja adicionar a lista de compras");
-				Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade: "));
+				Integer codigoProduto = Integer.parseInt(JOptionPane
+						.showInputDialog("Digite o código do produto que você deseja adicionar a lista de compras"));
 
 				Produto p = CaixaService.retornaProdutoPeloCodigo(produtos, codigoProduto);
 
 				if (p != null) {
+					Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade: "));
 
 					if (p.getQuantidade() >= quantidade) {
 						listaCompras.add(new Produto(p.getCodigo(), p.getNome(), p.getValor(), quantidade));
+						/// melhorar isso aqui
 						p.setQuantidade(-quantidade);
 
 					} else if (p.getQuantidade() == 0) {
@@ -44,6 +46,7 @@ public class CaixaController {
 					}
 
 					else {
+						// melhorar isso aqui
 						int escolha = Integer.parseInt(
 								"Quantidade desejada menor do que em estoque. Deseja adicionar todos os itens restantes ?");
 
@@ -58,37 +61,51 @@ public class CaixaController {
 					JOptionPane.showMessageDialog(null, "Produto não consta no estoque. Tente outro!");
 
 				}
-				// Listar produto(s) da sacola
-			case 2:
+				break;
+			// Listar produto(s) da sacola
+			case (ConstantesMenuFluxoCaixa.LISTAR):
 				CaixaService.listarCompras(listaCompras);
+				break;
 
-			case 3:
+			case (ConstantesMenuFluxoCaixa.FINALIZAR):
 
 				int codigoVenda = CaixaService.geradorDeCodigoVenda(codigosVendas);
 
 				codigosVendas.add(codigoVenda);
-				Venda novaVenda = new Venda(codigoVenda);
+				Venda novaVenda = new Venda(codigoVenda, Instant.now());
 				vendas.add(novaVenda);
 
 				for (Produto p1 : listaCompras) {
 					novaVenda.getProdutos().add(p1);
 				}
 
-				// nota fiscal
-				// CaixaService.geradorNotaFiscal(novaVenda);
+				if (MenuController.statusNotaFiscal) {
+					CaixaService.geradorNotaFiscal(novaVenda, MenuController.caminhoNotaFiscal);
+				}
 
 				listaCompras.clear();
 				JOptionPane.showMessageDialog(null, "Obrigado, volte sempre!");
+				break;
+			case (ConstantesMenuFluxoCaixa.LIMPAR):
+				listaCompras.clear();
+				break;
 
-			case 4:
+			case (ConstantesMenuFluxoCaixa.SAIR):
+				boolean autenticacao = AutenticadorSenha.autenticacaoSenha();
+
+				if (!autenticacao) {
+					JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
+					opcaoMenuFluxoDeCaixa = 0;
+				}
+
 				break;
 
 			default:
 
 				JOptionPane.showMessageDialog(null, "Opção inválida. Tente novamente!");
+				break;
 
 			}
-		} while (opcaoMenuFluxoDeCaixa != 4);
+		} while (opcaoMenuFluxoDeCaixa != ConstantesMenuFluxoCaixa.SAIR);
 	}
 }
-

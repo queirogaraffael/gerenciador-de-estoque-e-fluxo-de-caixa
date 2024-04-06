@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConstantesMenuPrincipal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenusView;
 
 public class MenuController {
@@ -17,6 +18,9 @@ public class MenuController {
 
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
+
+	public static Boolean statusNotaFiscal = false;
+	public static String caminhoNotaFiscal = "";
 
 	public MenuController() {
 		produtos = new HashSet<>();
@@ -35,8 +39,8 @@ public class MenuController {
 				opcaoMenuPrincipal = Integer.parseInt(JOptionPane.showInputDialog(MenusView.exibirMenuPrincipal()));
 
 				switch (opcaoMenuPrincipal) {
-				case 1:
-					boolean autenticacao = AutenticadorSenha.autenticacao();
+				case (ConstantesMenuPrincipal.GERENCIADOR_ESTOQUE):
+					boolean autenticacao = AutenticadorSenha.autenticacaoSenha();
 
 					if (autenticacao) {
 						estoqueController.gerenciarEstoque(produtos, vendas);
@@ -45,10 +49,10 @@ public class MenuController {
 					}
 
 					break;
-				case 2:
+				case (ConstantesMenuPrincipal.FLUXO_CAIXA):
 					caixaController.fluxoDeCaixa(produtos, vendas, codigosVendas);
 					break;
-				case 3:
+				case (ConstantesMenuPrincipal.SAIR):
 					JOptionPane.showMessageDialog(null, "Fim do programa");
 					System.exit(0);
 				default:
@@ -60,6 +64,7 @@ public class MenuController {
 						"Entrada inválida. Por favor, insira um número correspondente à opção desejada.");
 			}
 
-		} while (opcaoMenuPrincipal != 3);
+		} while (opcaoMenuPrincipal != ConstantesMenuPrincipal.SAIR);
 	}
+
 }

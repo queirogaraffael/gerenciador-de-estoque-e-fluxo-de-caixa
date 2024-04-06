@@ -16,9 +16,9 @@ public class CaixaService {
 
 	public static Random random = new Random();
 
-	public static void adicionarProduto(Set<Produto> produtos, Set<Produto> listaCompras, String codigo) {
+	public static void adicionarProduto(Set<Produto> produtos, Set<Produto> listaCompras, Integer codigo) {
 		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
+			if (p.getCodigo() == codigo) {
 				listaCompras.add(p);
 			}
 		}
@@ -40,24 +40,24 @@ public class CaixaService {
 		JOptionPane.showMessageDialog(null, sb);
 	}
 
-	public static boolean jaContemProduto(Set<Produto> listaCompras, String codigo) {
-		boolean tarefaJaExiste = listaCompras.stream().anyMatch(p -> p.getCodigo().equals(codigo));
+	public static boolean jaContemProduto(Set<Produto> listaCompras, Integer codigo) {
+		boolean tarefaJaExiste = listaCompras.stream().anyMatch(p -> p.getCodigo() == codigo);
 		return tarefaJaExiste;
 
 	}
 
-	public static Produto retornaProdutoPeloCodigo(Set<Produto> produtos, String codigo) {
+	public static Produto retornaProdutoPeloCodigo(Set<Produto> produtos, Integer codigo) {
 		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
+			if (p.getCodigo() == codigo) {
 				return p;
 			}
 		}
 		return null;
 	}
 
-	public static Venda retornaVendaPeloCodigo(Set<Venda> vendas, String codigo) {
+	public static Venda retornaVendaPeloCodigo(Set<Venda> vendas, Integer codigo) {
 		for (Venda p : vendas) {
-			if (p.getCodigo().equals(codigo)) {
+			if (p.getCodigo() == codigo) {
 				return p;
 			}
 		}
@@ -66,7 +66,7 @@ public class CaixaService {
 
 	public static int geradorDeCodigoVenda(Set<Integer> codigosVendas) {
 
-		int numero = random.nextInt(9000) + 1000; // um numero de 4 digitos
+		int numero = random.nextInt(9000) + 1000;
 
 		while (!codigosVendas.contains(numero) && !codigosVendas.isEmpty()) {
 			numero = random.nextInt(9000) + 1000;
@@ -75,7 +75,8 @@ public class CaixaService {
 		return numero;
 	}
 
-	public static void geradorNotaFiscal(Venda venda) {
+	public static void geradorNotaFiscal(Venda venda, String caminho) {
+		String codigo = String.valueOf(venda.getCodigo()) + ".txt";
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Código venda: " + venda.getCodigo() + "\n");
@@ -84,20 +85,15 @@ public class CaixaService {
 		}
 		sb.append(venda);
 
-		String diretorioPrograma = System.getProperty("user.dir");
-		String nomeNovaPasta = "notasFiscais";
-		String caminhoNovaPasta = diretorioPrograma + File.separator + nomeNovaPasta;
-		File novaPasta = new File(caminhoNovaPasta);
-		
-		
-		if (!novaPasta.exists()) {
-			novaPasta.mkdir();
-		}
-		
-		novaPasta.setWritable(true);
-		
+		File diretorio = new File(caminho);
 
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(novaPasta))) {
+		if (!diretorio.exists()) {
+			diretorio.mkdirs();
+		}
+
+		File arquivo = new File(diretorio, codigo);
+
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivo))) {
 			bw.write(sb.toString());
 
 		} catch (IOException e) {

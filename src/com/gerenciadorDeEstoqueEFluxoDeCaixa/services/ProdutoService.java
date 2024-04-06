@@ -3,6 +3,7 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -16,10 +17,10 @@ public class ProdutoService {
 	}
 
 	// edição
-	public static void editarProdutoCompleto(Set<Produto> produtos, String codigo, String novoNome, Double novoValor,
+	public static void editarProdutoCompleto(Set<Produto> produtos, Integer codigo, String novoNome, Double novoValor,
 			int novaQuantidade) {
 		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
+			if (p.getCodigo()==codigo) {
 				p.setNome(novoNome);
 				p.setValor(novoValor);
 				p.setQuantidade(novaQuantidade);
@@ -28,9 +29,9 @@ public class ProdutoService {
 		}
 	}
 
-	public static void editarProdutoQuantidade(Set<Produto> produtos, String codigo, int novaQuantidade) {
+	public static void editarProdutoQuantidade(Set<Produto> produtos, Integer codigo, int novaQuantidade) {
 		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
+			if (p.getCodigo()==codigo) {
 				p.setQuantidade(novaQuantidade);
 				break;
 			}
@@ -39,6 +40,7 @@ public class ProdutoService {
 
 	// listagem de produtos
 	public static void visualizarProduto(Set<Produto> produtos) {
+		
 		StringBuilder sb = new StringBuilder();
 		sb.append("Listagem de produtos: \n");
 		
@@ -49,12 +51,12 @@ public class ProdutoService {
 	}
 
 	// remoção por código
-	public static void removerProduto(Set<Produto> tarefas, String codigo) {
-		tarefas.removeIf(p -> p.getCodigo().equals(codigo));
+	public static void removerProduto(Set<Produto> tarefas, Integer codigo) {
+		tarefas.removeIf(p -> p.getCodigo()==(codigo));
 	}
 
-	public static boolean jaContemProduto(Set<Produto> produtos, String codigo) {
-		boolean tarefaJaExiste = produtos.stream().anyMatch(p -> p.getCodigo().equals(codigo));
+	public static boolean jaContemProduto(Set<Produto> produtos, Integer codigo) {
+		boolean tarefaJaExiste = produtos.stream().anyMatch(p -> p.getCodigo()==codigo);
 		return tarefaJaExiste;
 
 	}
@@ -67,7 +69,7 @@ public class ProdutoService {
 
 				String[] atributos = line.split(",");
 
-				String codigo = atributos[0];
+				Integer codigo = Integer.parseInt(atributos[0]);
 				String nome = atributos[1];
 				Double valor = Double.parseDouble(atributos[2]);
 				Integer quantidade = Integer.parseInt(atributos[3]);

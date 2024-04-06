@@ -1,8 +1,8 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.view;
 
-public class Menus {
-	
-	public static String menuPrincipal() {
+public class MenusView {
+
+	public static String exibirMenuPrincipal() {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Bem-vindo ao Gerenciador de Estoque e Fluxo de Caixa\n\n");
 		menu.append("Menu:\n");
@@ -12,10 +12,8 @@ public class Menus {
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
 	}
-	
-	
 
-	public static String menuEstoque() {
+	public static String exibirMenuEstoque() {
 
 		StringBuilder menu = new StringBuilder();
 		menu.append("Bem-vindo ao Controle de Estoque\n\n");
@@ -29,10 +27,9 @@ public class Menus {
 		menu.append("7. Voltar\n");
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
-
 	}
 
-	public static String menuFluxoDeCaixa() {
+	public static String exibirMenuFluxoCaixa() {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Bem-vindo ao Fluxo de Caixa\n\n");
 		menu.append("Menu:\n");

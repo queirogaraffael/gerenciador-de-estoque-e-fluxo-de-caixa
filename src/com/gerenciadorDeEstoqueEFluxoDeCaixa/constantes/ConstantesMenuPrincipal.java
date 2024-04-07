@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.utils;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes;
 
 public class ConstantesMenuPrincipal {
 

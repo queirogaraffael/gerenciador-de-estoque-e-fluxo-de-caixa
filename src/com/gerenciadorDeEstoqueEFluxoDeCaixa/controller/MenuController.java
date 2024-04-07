@@ -5,10 +5,10 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuPrincipal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorSenha;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConstantesMenuPrincipal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenusView;
 
 public class MenuController {
@@ -19,8 +19,8 @@ public class MenuController {
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
 
-	public static Boolean statusNotaFiscal = false;
-	public static String caminhoNotaFiscal = "";
+	private Boolean statusNotaFiscal;
+	private String caminhoNotaFiscal;
 
 	public MenuController() {
 		produtos = new HashSet<>();
@@ -28,7 +28,8 @@ public class MenuController {
 		codigosVendas = new HashSet<>();
 		estoqueController = new EstoqueController();
 		caixaController = new CaixaController();
-
+		this.statusNotaFiscal = false;
+		this.caminhoNotaFiscal = "";
 	}
 
 	public void exibirMenuPrincipal() {
@@ -43,14 +44,14 @@ public class MenuController {
 					boolean autenticacao = AutenticadorSenha.autenticacaoSenha();
 
 					if (autenticacao) {
-						estoqueController.gerenciarEstoque(produtos, vendas);
+						estoqueController.gerenciarEstoque(produtos, vendas, statusNotaFiscal, caminhoNotaFiscal);
 					} else {
 						JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
 					}
 
 					break;
 				case (ConstantesMenuPrincipal.FLUXO_CAIXA):
-					caixaController.fluxoDeCaixa(produtos, vendas, codigosVendas);
+					caixaController.fluxoDeCaixa(produtos, vendas, codigosVendas, statusNotaFiscal, caminhoNotaFiscal);
 					break;
 				case (ConstantesMenuPrincipal.SAIR):
 					JOptionPane.showMessageDialog(null, "Fim do programa");

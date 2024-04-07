@@ -3,10 +3,7 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
-
-import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 
@@ -20,7 +17,7 @@ public class ProdutoService {
 	public static void editarProdutoCompleto(Set<Produto> produtos, Integer codigo, String novoNome, Double novoValor,
 			int novaQuantidade) {
 		for (Produto p : produtos) {
-			if (p.getCodigo()==codigo) {
+			if (p.getCodigo().equals(codigo)) {
 				p.setNome(novoNome);
 				p.setValor(novoValor);
 				p.setQuantidade(novaQuantidade);
@@ -31,34 +28,16 @@ public class ProdutoService {
 
 	public static void editarProdutoQuantidade(Set<Produto> produtos, Integer codigo, int novaQuantidade) {
 		for (Produto p : produtos) {
-			if (p.getCodigo()==codigo) {
+			if (p.getCodigo().equals(codigo)) {
 				p.setQuantidade(novaQuantidade);
 				break;
 			}
 		}
 	}
 
-	// listagem de produtos
-	public static void visualizarProduto(Set<Produto> produtos) {
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append("Listagem de produtos: \n");
-		
-		for (Produto p : produtos) {
-			sb.append(p + "\n");
-		}
-		JOptionPane.showMessageDialog(null, sb.toString());
-	}
-
 	// remoção por código
-	public static void removerProduto(Set<Produto> tarefas, Integer codigo) {
-		tarefas.removeIf(p -> p.getCodigo()==(codigo));
-	}
-
-	public static boolean jaContemProduto(Set<Produto> produtos, Integer codigo) {
-		boolean tarefaJaExiste = produtos.stream().anyMatch(p -> p.getCodigo()==codigo);
-		return tarefaJaExiste;
-
+	public static void removerProduto(Set<Produto> produtos, Integer codigo) {
+		produtos.removeIf(p -> p.getCodigo().equals(codigo));
 	}
 
 	public static void adicionaProdutoPorArquivo(String caminho, Set<Produto> listaProdutos) {

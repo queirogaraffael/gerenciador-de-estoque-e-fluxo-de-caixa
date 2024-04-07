@@ -4,16 +4,16 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuEstoque;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CaixaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ComumService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConstantesMenuEstoque;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenusView;
 
 public class EstoqueController {
 
-	public void gerenciarEstoque(Set<Produto> produtos, Set<Venda> vendas) {
+	public void gerenciarEstoque(Set<Produto> produtos, Set<Venda> vendas, Boolean statusNotaFiscal, String caminhoNotaFiscal) {
 
 		int opcao = 0;
 		Produto produto;
@@ -31,7 +31,7 @@ public class EstoqueController {
 
 					Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
 
-					if (ProdutoService.jaContemProduto(produtos, codigo)) {
+					if (ComumService.jaContem(produtos, codigo)) {
 						JOptionPane.showMessageDialog(null,
 								"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
 					} else {
@@ -61,7 +61,7 @@ public class EstoqueController {
 
 					Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do produto: "));
 
-					if (!ProdutoService.jaContemProduto(produtos, codigo)) {
+					if (!ComumService.jaContem(produtos, codigo)) {
 						System.out.println("Produto inválido. Tente outro!");
 					} else {
 						String novoNome = JOptionPane.showInputDialog("Digite o novo nome do produto: ");
@@ -76,10 +76,12 @@ public class EstoqueController {
 				} else {
 					Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do produto: "));
 
-					if (ProdutoService.jaContemProduto(produtos, codigo)) {
+					if (ComumService.jaContem(produtos, codigo)) {
 						Integer novaQuatidade = Integer
 								.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade do produto: "));
+
 						ProdutoService.editarProdutoQuantidade(produtos, codigo, novaQuatidade);
+
 						JOptionPane.showMessageDialog(null, "Quantidade modificada com sucesso!");
 					} else {
 						JOptionPane.showMessageDialog(null, "Produto não cadastrado ainda. Tente outro!");
@@ -90,8 +92,8 @@ public class EstoqueController {
 
 			// Visualizar produto(s)
 			case (ConstantesMenuEstoque.LISTAGEM):
-
-				ProdutoService.visualizarProduto(produtos);
+				
+				ComumService.imprimir(produtos);
 				break;
 
 			// Remoção de produto(s)
@@ -103,7 +105,7 @@ public class EstoqueController {
 				if (produtos.isEmpty()) {
 
 					JOptionPane.showMessageDialog(null, "Adicione primeiro um produto para poder remover.");
-				} else if (!ProdutoService.jaContemProduto(produtos, codigoProdutoParaRemover)) {
+				} else if (!ComumService.jaContem(produtos, codigoProdutoParaRemover)) {
 					JOptionPane.showMessageDialog(null,
 							"Produto já não constava no gerenciador de estoque. Tente novamente com uma produto existente.");
 
@@ -118,12 +120,12 @@ public class EstoqueController {
 						JOptionPane.showInputDialog("Deseja ativar o gerador de notas fiscais ?\n1. Sim\n2. Não"));
 				if (status == 1) {
 
-					String path = JOptionPane
-							.showInputDialog("Entre como o diretorio que você deseja salvar as notas fiscais: ");
+					String path = JOptionPane.showInputDialog(
+							"Entre com o caminho do diretorio que você deseja salvar as notas fiscais: ");
 
-					MenuController.caminhoNotaFiscal = path;
-					MenuController.statusNotaFiscal = true;
-					
+					caminhoNotaFiscal = path;
+					statusNotaFiscal = true;
+
 					JOptionPane.showMessageDialog(null, "Gerador de notas fiscais ativado com sucesso!");
 
 				}
@@ -131,13 +133,10 @@ public class EstoqueController {
 
 			case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
 
-				/// implementar codigo de imprimir
-
 				if (!vendas.isEmpty()) {
-					System.out.println("Todas as vendas do estabelecimento");
-					for (Venda v : vendas) {
-						System.out.println(v);
-					}
+
+					ComumService.imprimir(vendas);
+
 				} else {
 					JOptionPane.showMessageDialog(null, "Sem venda registrada.");
 				}
@@ -148,12 +147,19 @@ public class EstoqueController {
 				if (!vendas.isEmpty()) {
 
 					Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Codigo de venda: "));
-					Venda venda = CaixaService.retornaVendaPeloCodigo(vendas, codigo);
-					JOptionPane.showMessageDialog(null, venda);
+
+					if (ComumService.jaContem(vendas, codigo)) {
+						Venda venda = ComumService.retornaPeloCodigo(vendas, codigo);
+						JOptionPane.showMessageDialog(null, venda);
+					} else {
+						JOptionPane.showMessageDialog(null, "Venda inválida. Tente outra!");
+					}
+
 				} else {
 					JOptionPane.showMessageDialog(null, "Sem venda registrada ainda.");
 				}
 				break;
+
 			// Opção voltar
 			case (ConstantesMenuEstoque.VOLTAR):
 

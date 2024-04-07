@@ -18,7 +18,7 @@ public class CaixaService {
 
 	public static void adicionarProduto(Set<Produto> produtos, Set<Produto> listaCompras, Integer codigo) {
 		for (Produto p : produtos) {
-			if (p.getCodigo() == codigo) {
+			if (p.getCodigo().equals(codigo)) {
 				listaCompras.add(p);
 			}
 		}
@@ -27,7 +27,6 @@ public class CaixaService {
 	public static void listarCompras(Set<Produto> listaCompras) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("Todos os produtos da sua sacola de compras:\n");
 
 		double subtotal = 0;
 
@@ -40,38 +39,16 @@ public class CaixaService {
 		JOptionPane.showMessageDialog(null, sb);
 	}
 
-	public static boolean jaContemProduto(Set<Produto> listaCompras, Integer codigo) {
-		boolean tarefaJaExiste = listaCompras.stream().anyMatch(p -> p.getCodigo() == codigo);
-		return tarefaJaExiste;
-
-	}
-
-	public static Produto retornaProdutoPeloCodigo(Set<Produto> produtos, Integer codigo) {
-		for (Produto p : produtos) {
-			if (p.getCodigo() == codigo) {
-				return p;
-			}
-		}
-		return null;
-	}
-
-	public static Venda retornaVendaPeloCodigo(Set<Venda> vendas, Integer codigo) {
-		for (Venda p : vendas) {
-			if (p.getCodigo() == codigo) {
-				return p;
-			}
-		}
-		return null;
-	}
-
-	public static int geradorDeCodigoVenda(Set<Integer> codigosVendas) {
+	// gera um codigo inteiro de 4 digitos
+	public static int geradorDeCodigo(Set<Integer> colecaoCodigos) {
 
 		int numero = random.nextInt(9000) + 1000;
 
-		while (!codigosVendas.contains(numero) && !codigosVendas.isEmpty()) {
+		while (colecaoCodigos.contains(numero)) {
 			numero = random.nextInt(9000) + 1000;
 		}
 
+		colecaoCodigos.add(numero);
 		return numero;
 	}
 
@@ -100,4 +77,13 @@ public class CaixaService {
 			e.printStackTrace();
 		}
 	}
+
+	public static int quantidadeRealProduto(Set<Produto> listaCompras, Set<Produto> produtos, int codigo) {
+		Produto prod = ComumService.retornaPeloCodigo(listaCompras, codigo);
+		Produto produtoEstoque = ComumService.retornaPeloCodigo(produtos, codigo);
+
+		return prod.getQuantidade() + produtoEstoque.getQuantidade();
+
+	}
+
 }

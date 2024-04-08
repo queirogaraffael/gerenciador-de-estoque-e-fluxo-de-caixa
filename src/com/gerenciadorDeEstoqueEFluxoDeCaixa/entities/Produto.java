@@ -2,9 +2,9 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
 import java.util.Objects;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.InterfaceGetCode;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.interfaces.InterfaceSuporteMetodosEmComum;
 
-public class Produto implements InterfaceGetCode{
+public class Produto implements InterfaceSuporteMetodosEmComum{
 	private Integer codigo;
 	private String nome;
 	private Double valor;

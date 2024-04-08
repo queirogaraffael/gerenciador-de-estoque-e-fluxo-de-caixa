@@ -8,7 +8,7 @@ public class ConstantesMenuFluxoCaixa {
 	public static final int REMOVER_PRODUTO = 4;
 	public static final int MODIFICAR_QUANTIDADE = 5;
 	public static final int LIMPAR = 6;
-	public static final int FINALIZAR = 7;
+	public static final int FINALIZAR_COMPRA = 7;
 	public static final int SAIR = 8;
 
 }

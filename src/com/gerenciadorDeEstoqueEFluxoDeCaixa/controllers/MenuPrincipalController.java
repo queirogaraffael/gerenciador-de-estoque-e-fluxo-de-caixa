@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.controller;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,10 +8,10 @@ import javax.swing.JOptionPane;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuPrincipal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorSenha;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.view.MenusView;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.MenuPrincipalView;
 
-public class MenuController {
+public class MenuPrincipalController {
 	private Set<Produto> produtos;
 	private Set<Venda> vendas;
 	private Set<Integer> codigosVendas;
@@ -22,7 +22,7 @@ public class MenuController {
 	private Boolean statusNotaFiscal;
 	private String caminhoNotaFiscal;
 
-	public MenuController() {
+	public MenuPrincipalController() {
 		produtos = new HashSet<>();
 		vendas = new HashSet<>();
 		codigosVendas = new HashSet<>();
@@ -37,14 +37,15 @@ public class MenuController {
 
 		do {
 			try {
-				opcaoMenuPrincipal = Integer.parseInt(JOptionPane.showInputDialog(MenusView.exibirMenuPrincipal()));
+				opcaoMenuPrincipal = Integer.parseInt(JOptionPane.showInputDialog(MenuPrincipalView.exibirMenuPrincipal()));
 
 				switch (opcaoMenuPrincipal) {
 				case (ConstantesMenuPrincipal.GERENCIADOR_ESTOQUE):
-					boolean autenticacao = AutenticadorSenha.autenticacaoSenha();
+					String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
+					boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
 					if (autenticacao) {
-						estoqueController.gerenciarEstoque(produtos, vendas, statusNotaFiscal, caminhoNotaFiscal);
+						estoqueController.gerenciadorEstoque(produtos, vendas, statusNotaFiscal, caminhoNotaFiscal);
 					} else {
 						JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
 					}

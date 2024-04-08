@@ -7,44 +7,19 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
-
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 
-public class CaixaService {
+public class FluxoDeCaixaService {
 
 	public static Random random = new Random();
-
-	public static void adicionarProduto(Set<Produto> produtos, Set<Produto> listaCompras, Integer codigo) {
-		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
-				listaCompras.add(p);
-			}
-		}
-	}
-
-	public static void listarCompras(Set<Produto> listaCompras) {
-
-		StringBuilder sb = new StringBuilder();
-
-		double subtotal = 0;
-
-		for (Produto p : listaCompras) {
-			sb.append(p + "\n");
-			subtotal += p.getValor() * p.getQuantidade();
-		}
-		sb.append(String.format("Subtotal: %.2f", subtotal));
-
-		JOptionPane.showMessageDialog(null, sb);
-	}
 
 	// gera um codigo inteiro de 4 digitos
 	public static int geradorDeCodigo(Set<Integer> colecaoCodigos) {
 
 		int numero = random.nextInt(9000) + 1000;
 
-		while (colecaoCodigos.contains(numero)) {
+		while (colecaoCodigos.contains(numero)) { 
 			numero = random.nextInt(9000) + 1000;
 		}
 
@@ -78,12 +53,5 @@ public class CaixaService {
 		}
 	}
 
-	public static int quantidadeRealProduto(Set<Produto> listaCompras, Set<Produto> produtos, int codigo) {
-		Produto prod = ComumService.retornaPeloCodigo(listaCompras, codigo);
-		Produto produtoEstoque = ComumService.retornaPeloCodigo(produtos, codigo);
-
-		return prod.getQuantidade() + produtoEstoque.getQuantidade();
-
-	}
 
 }

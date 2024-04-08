@@ -1,12 +1,12 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.application;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.controller.MenuController;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers.MenuPrincipalController;
 
 public class Main {
 
 	public static void main(String[] args) {
 
-		MenuController controller = new MenuController();
+		MenuPrincipalController controller = new MenuPrincipalController();
 		controller.exibirMenuPrincipal();
 	}
 

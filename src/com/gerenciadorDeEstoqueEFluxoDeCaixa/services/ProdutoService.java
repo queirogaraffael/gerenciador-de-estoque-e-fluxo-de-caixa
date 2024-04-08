@@ -13,31 +13,29 @@ public class ProdutoService {
 		produtos.add(produto);
 	}
 
-	// edição
-	public static void editarProdutoCompleto(Set<Produto> produtos, Integer codigo, String novoNome, Double novoValor,
-			int novaQuantidade) {
-		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
-				p.setNome(novoNome);
-				p.setValor(novoValor);
-				p.setQuantidade(novaQuantidade);
-				break;
-			}
-		}
-	}
-
-	public static void editarProdutoQuantidade(Set<Produto> produtos, Integer codigo, int novaQuantidade) {
-		for (Produto p : produtos) {
-			if (p.getCodigo().equals(codigo)) {
-				p.setQuantidade(novaQuantidade);
-				break;
-			}
-		}
-	}
-
 	// remoção por código
-	public static void removerProduto(Set<Produto> produtos, Integer codigo) {
+	public static void removeProduto(Set<Produto> produtos, Integer codigo) {
 		produtos.removeIf(p -> p.getCodigo().equals(codigo));
+	}
+
+	// edição
+	public static void editaProduto(Produto produtoModificar, String novoNome, Double novoValor, int novaQuantidade) {
+		produtoModificar.setNome(novoNome);
+		produtoModificar.setValor(novoValor);
+		produtoModificar.setQuantidade(null);
+	}
+
+	// edição. sobrecarga de metodo
+	public static void editaProduto(Produto produto, int novaQuantidade) {
+		produto.setQuantidade(novaQuantidade);
+	}
+
+	public static int quantidadeRealProduto(Set<Produto> listaCompras, Set<Produto> produtos, int codigo) {
+		Produto prod = ComumProdutoVendaService.retornaPeloCodigo(listaCompras, codigo);
+		Produto produtoEstoque = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
+
+		return prod.getQuantidade() + produtoEstoque.getQuantidade();
+
 	}
 
 	public static void adicionaProdutoPorArquivo(String caminho, Set<Produto> listaProdutos) {
@@ -60,6 +58,15 @@ public class ProdutoService {
 		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
+	}
+
+	public static Double somaValores(Set<Produto> listaCompras) {
+		double total = 0;
+
+		for (Produto p : listaCompras) {
+			total += p.getValor() * p.getQuantidade();
+		}
+		return total;
 	}
 
 }

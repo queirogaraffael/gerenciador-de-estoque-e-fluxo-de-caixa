@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.InterfaceGetCode;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.interfaces.InterfaceSuporteMetodosEmComum;
 
-public class Venda implements InterfaceGetCode{
+public class Venda implements InterfaceSuporteMetodosEmComum{
 	private Integer codigo;
 	private Instant instant;
 	private Set<Produto> produtos = new HashSet<>();

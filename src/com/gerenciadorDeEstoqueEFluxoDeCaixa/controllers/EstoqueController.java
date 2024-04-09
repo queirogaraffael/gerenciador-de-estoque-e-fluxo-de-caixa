@@ -19,52 +19,57 @@ public class EstoqueController {
 		int opcao = 0;
 
 		do {
-			opcao = Integer
-					.parseInt(JOptionPane.showInputDialog(GerenciadorDeEstoqueView.exibirMenuGerenciadorDeEstoque()));
+			try {
+				opcao = Integer.parseInt(
+						JOptionPane.showInputDialog(GerenciadorDeEstoqueView.exibirMenuGerenciadorDeEstoque()));
 
-			switch (opcao) {
+				switch (opcao) {
 
-			case (ConstantesMenuEstoque.CADASTRAR):
+				case (ConstantesMenuEstoque.CADASTRAR):
 
-				cadastrarProduto(produtos);
-				break;
+					cadastrarProduto(produtos);
+					break;
 
-			case (ConstantesMenuEstoque.EDITAR):
+				case (ConstantesMenuEstoque.EDITAR):
 
-				editarProduto(produtos);
-				break;
+					editarProduto(produtos);
+					break;
 
-			case (ConstantesMenuEstoque.LISTAGEM):
+				case (ConstantesMenuEstoque.LISTAGEM):
 
-				listarProdutos(produtos);
-				break;
+					listarProdutos(produtos);
+					break;
 
-			case (ConstantesMenuEstoque.REMOVER):
+				case (ConstantesMenuEstoque.REMOVER):
 
-				removerProduto(produtos);
-				break;
+					removerProduto(produtos);
+					break;
 
-			case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
+				case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
 
-				ativadorNotaFiscal(caminhoNotaFiscal, statusNotaFiscal);
-				break;
+					ativadorNotaFiscal(caminhoNotaFiscal, statusNotaFiscal);
+					break;
 
-			case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
+				case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
 
-				listarVendas(vendas);
-				break;
+					listarVendas(vendas);
+					break;
 
-			case (ConstantesMenuEstoque.DETALHES_VENDA):
+				case (ConstantesMenuEstoque.DETALHES_VENDA):
 
-				detalharVenda(vendas);
-				break;
+					detalharVenda(vendas);
+					break;
 
-			case (ConstantesMenuEstoque.VOLTAR):
-				break;
+				case (ConstantesMenuEstoque.VOLTAR):
+					break;
 
-			default:
-				JOptionPane.showMessageDialog(null, "Opção inválida. Tente outra!");
-				break;
+				default:
+					JOptionPane.showMessageDialog(null, "Opção inválida. Tente outra!");
+					break;
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null,
+						"Entrada inválida. Por favor, insira um número correspondente à opção desejada.");
 			}
 
 		} while (opcao != ConstantesMenuEstoque.VOLTAR);
@@ -72,28 +77,49 @@ public class EstoqueController {
 
 	private void cadastrarProduto(Set<Produto> produtos) {
 		Produto produto;
-		int opcaoAdicionar = Integer
-				.parseInt(JOptionPane.showInputDialog("1. Adicionar manualmente\n2. Adicionar por arquivo\n3. Voltar"));
+		int opcaoAdicionar = Integer.parseInt(JOptionPane
+				.showInputDialog("1. Adicionar manualmente\n2. Adicionar por arquivo\n3. Desativar arquivo \n4. Voltar"));
 
 		if (opcaoAdicionar == 1) {
 
-			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
-
-			if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
-				JOptionPane.showMessageDialog(null,
-						"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
+			if (MenuPrincipalController.statusArquivoAdicionado == true) {
+				JOptionPane.showMessageDialog(null, "Desative primeiro o arquivo para poder adicionar manualmente.");
 			} else {
-				String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
-				Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
-				Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
+				Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
 
-				produto = new Produto(codigo, nome, valor, quantidade);
-				ProdutoService.adicionarProduto(produtos, produto);
-				JOptionPane.showMessageDialog(null, "Produto adicionada com sucesso!");
+				if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
+					JOptionPane.showMessageDialog(null,
+							"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
+				} else {
+					String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
+					Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
+					Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
+
+					produto = new Produto(codigo, nome, valor, quantidade);
+					ProdutoService.adicionarProduto(produtos, produto);
+					JOptionPane.showMessageDialog(null, "Produto adicionada com sucesso!");
+				}
 			}
+
 		} else if (opcaoAdicionar == 2) {
+
 			String path = JOptionPane.showInputDialog("Digite o caminho do arquivo:");
 			ProdutoService.adicionaProdutoPorArquivo(path, produtos);
+			
+			MenuPrincipalController.caminhoArquivoAdicionado = path;
+			MenuPrincipalController.statusArquivoAdicionado = true;
+			
+			JOptionPane.showMessageDialog(null, "Produtos por arquivo adicionado com sucesso!");
+
+		} else if (opcaoAdicionar == 3) {
+
+			if (MenuPrincipalController.statusArquivoAdicionado == false) {
+				JOptionPane.showInternalMessageDialog(null, "Arquivo já estava desativado.");
+			} else {
+				MenuPrincipalController.statusArquivoAdicionado = false;
+				JOptionPane.showInternalMessageDialog(null, "Arquivo desativado.");
+			}
+
 		}
 	}
 
@@ -117,6 +143,10 @@ public class EstoqueController {
 				Produto produtoModificar = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
 				ProdutoService.editaProduto(produtoModificar, novoNome, novoValor, novaQuantidade);
 
+				if (MenuPrincipalController.statusArquivoAdicionado == true) {
+					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
+				}
+
 				JOptionPane.showMessageDialog(null, "Produto modificado com sucesso!");
 			}
 
@@ -129,6 +159,10 @@ public class EstoqueController {
 				Produto produtoModificar = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
 				ProdutoService.editaProduto(produtoModificar, novaQuatidade);
 
+				if (MenuPrincipalController.statusArquivoAdicionado == true) {
+					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
+				}
+
 				JOptionPane.showMessageDialog(null, "Quantidade modificada com sucesso!");
 			} else {
 				JOptionPane.showMessageDialog(null, "Produto não cadastrado ainda. Tente outro!");
@@ -138,8 +172,14 @@ public class EstoqueController {
 	}
 
 	private void listarProdutos(Set<Produto> produtos) {
-		String resultado = ComumProdutoVendaService.imprimir(produtos);
-		JOptionPane.showMessageDialog(null, resultado);
+
+		if (produtos.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
+		} else {
+			String resultado = ComumProdutoVendaService.imprimir(produtos);
+			JOptionPane.showMessageDialog(null, resultado);
+		}
+
 	}
 
 	private void removerProduto(Set<Produto> produtos) {
@@ -156,7 +196,13 @@ public class EstoqueController {
 
 			} else {
 				ProdutoService.removeProduto(produtos, codigoProdutoParaRemover);
+
+				if (MenuPrincipalController.statusArquivoAdicionado == true) {
+					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
+				}
+
 				JOptionPane.showMessageDialog(null, "Produto removida com sucesso!");
+
 			}
 
 		}
@@ -171,8 +217,8 @@ public class EstoqueController {
 			String path = JOptionPane
 					.showInputDialog("Entre com o caminho do diretorio que você deseja salvar as notas fiscais: ");
 
-			caminhoNotaFiscal = path;
-			statusNotaFiscal = true;
+			MenuPrincipalController.caminhoNotaFiscal = path;
+			MenuPrincipalController.statusNotaFiscal = true;
 
 			JOptionPane.showMessageDialog(null, "Gerador de notas fiscais ativado com sucesso!");
 

@@ -1,9 +1,13 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 
@@ -56,7 +60,23 @@ public class ProdutoService {
 				line = br.readLine();
 			}
 		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+		}
+	}
+
+	public static void atualizaArquivoProdutos(String caminho, Set<Produto> produtos) {
+
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(caminho))) {
+			for (Produto p : produtos) {
+
+				String resultadoFormatado = String.valueOf(p.getCodigo()) + "," + p.getNome() + ","
+						+ String.valueOf(p.getValor()) + "," + String.valueOf(p.getQuantidade());
+
+				bw.write(resultadoFormatado);
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
 		}
 	}
 

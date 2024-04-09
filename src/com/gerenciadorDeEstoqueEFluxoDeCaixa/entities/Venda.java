@@ -84,7 +84,7 @@ public class Venda implements InterfaceSuporteMetodosEmComum{
 	@Override
 	public String toString() {
 		return "Venda: codigo = " + codigo
-				+ String.format(", valor total %.2f, Data: %s\n", valorTotal(), getInstant());
+				+ String.format(", Valor Total: %.2f R$, Data: %s\n", valorTotal(), getInstant());
 	}
 
 }

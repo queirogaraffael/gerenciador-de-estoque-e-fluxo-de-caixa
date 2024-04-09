@@ -19,7 +19,7 @@ public class FluxoDeCaixaService {
 
 		int numero = random.nextInt(9000) + 1000;
 
-		while (colecaoCodigos.contains(numero)) { 
+		while (colecaoCodigos.contains(numero)) {
 			numero = random.nextInt(9000) + 1000;
 		}
 
@@ -52,6 +52,5 @@ public class FluxoDeCaixaService {
 			e.printStackTrace();
 		}
 	}
-
 
 }

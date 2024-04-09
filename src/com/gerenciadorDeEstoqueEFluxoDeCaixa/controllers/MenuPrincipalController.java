@@ -19,8 +19,11 @@ public class MenuPrincipalController {
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
 
-	private Boolean statusNotaFiscal;
-	private String caminhoNotaFiscal;
+	protected static Boolean statusNotaFiscal;
+	protected static String caminhoNotaFiscal;
+
+	protected static Boolean statusArquivoAdicionado;
+	protected static String caminhoArquivoAdicionado;
 
 	public MenuPrincipalController() {
 		produtos = new HashSet<>();
@@ -28,8 +31,9 @@ public class MenuPrincipalController {
 		codigosVendas = new HashSet<>();
 		estoqueController = new EstoqueController();
 		caixaController = new CaixaController();
-		this.statusNotaFiscal = false;
-		this.caminhoNotaFiscal = "";
+		statusNotaFiscal = false;
+		caminhoNotaFiscal = "";
+		statusArquivoAdicionado = false;
 	}
 
 	public void exibirMenuPrincipal() {
@@ -37,7 +41,8 @@ public class MenuPrincipalController {
 
 		do {
 			try {
-				opcaoMenuPrincipal = Integer.parseInt(JOptionPane.showInputDialog(MenuPrincipalView.exibirMenuPrincipal()));
+				opcaoMenuPrincipal = Integer
+						.parseInt(JOptionPane.showInputDialog(MenuPrincipalView.exibirMenuPrincipal()));
 
 				switch (opcaoMenuPrincipal) {
 				case (ConstantesMenuPrincipal.GERENCIADOR_ESTOQUE):

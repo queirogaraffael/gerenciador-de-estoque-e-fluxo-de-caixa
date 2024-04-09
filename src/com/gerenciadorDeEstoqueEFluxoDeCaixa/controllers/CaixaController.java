@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuFluxoCaixa;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.FluxoDeCaixaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ComumProdutoVendaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.FluxoDeCaixaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
@@ -23,56 +23,62 @@ public class CaixaController {
 		Set<Produto> listaCompras = new HashSet<>();
 
 		do {
+			try {
+				opcaoMenuFluxoDeCaixa = Integer
+						.parseInt(JOptionPane.showInputDialog(FluxoDeCaixaView.exibirMenuFluxoDeCaixa()));
 
-			opcaoMenuFluxoDeCaixa = Integer
-					.parseInt(JOptionPane.showInputDialog(FluxoDeCaixaView.exibirMenuFluxoDeCaixa()));
+				switch (opcaoMenuFluxoDeCaixa) {
 
-			switch (opcaoMenuFluxoDeCaixa) {
+				case (ConstantesMenuFluxoCaixa.ADICIONAR):
+					adicionaProduto(listaCompras, produtos);
+					break;
 
-			case (ConstantesMenuFluxoCaixa.ADICIONAR):
-				adicionaProduto(listaCompras, produtos);
-				break;
+				case (ConstantesMenuFluxoCaixa.LISTAR_SACOLA):
+					listarSacola(listaCompras);
 
-			case (ConstantesMenuFluxoCaixa.LISTAR_SACOLA):
-				listarSacola(listaCompras);
+					break;
 
-				break;
+				case (ConstantesMenuFluxoCaixa.LISTAR_ESTOQUE):
+					listarEstoque(produtos);
 
-			case (ConstantesMenuFluxoCaixa.LISTAR_ESTOQUE):
-				listarEstoque(produtos);
-				break;
+					break;
 
-			case (ConstantesMenuFluxoCaixa.REMOVER_PRODUTO):
+				case (ConstantesMenuFluxoCaixa.REMOVER_PRODUTO):
 
-				removerProduto(listaCompras, produtos);
+					removerProduto(listaCompras, produtos);
 
-				break;
+					break;
 
-			case (ConstantesMenuFluxoCaixa.MODIFICAR_QUANTIDADE):
+				case (ConstantesMenuFluxoCaixa.MODIFICAR_QUANTIDADE):
 
-				modificarQuantidade(listaCompras, produtos);
+					modificarQuantidade(listaCompras, produtos);
 
-				break;
+					break;
 
-			case (ConstantesMenuFluxoCaixa.FINALIZAR_COMPRA):
+				case (ConstantesMenuFluxoCaixa.FINALIZAR_COMPRA):
 
-				finalizarCompra(listaCompras, codigosVendas, vendas, statusNotaFiscal, caminhoNotaFiscal);
-				break;
+					finalizarCompra(listaCompras, codigosVendas, vendas, statusNotaFiscal, caminhoNotaFiscal, produtos);
+					break;
 
-			case (ConstantesMenuFluxoCaixa.LIMPAR):
+				case (ConstantesMenuFluxoCaixa.LIMPAR):
 
-				limparCarrinho(listaCompras, produtos);
-				break;
+					limparCarrinho(listaCompras, produtos);
+					break;
 
-			case (ConstantesMenuFluxoCaixa.SAIR):
-				sair(opcaoMenuFluxoDeCaixa);
+				case (ConstantesMenuFluxoCaixa.SAIR):
+					sair(opcaoMenuFluxoDeCaixa);
 
-				break;
-			default:
-				JOptionPane.showMessageDialog(null, "Opção inválida. Tente novamente!");
-				break;
+					break;
+				default:
+					JOptionPane.showMessageDialog(null, "Opção inválida. Tente novamente!");
+					break;
 
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null,
+						"Entrada inválida. Por favor, insira um número correspondente à opção desejada.");
 			}
+
 		} while (opcaoMenuFluxoDeCaixa != ConstantesMenuFluxoCaixa.SAIR);
 	}
 
@@ -116,8 +122,9 @@ public class CaixaController {
 
 	private void listarSacola(Set<Produto> listaCompras) {
 		String lista = ComumProdutoVendaService.imprimir(listaCompras);
-		String subtotal = String.format("%.2f", String.valueOf(ProdutoService.somaValores(listaCompras)));
-		String resultado = lista + "\n" + subtotal;
+		double subtotal = ProdutoService.somaValores(listaCompras);
+		String subtotalFormatado = String.format("Subtotal: %.2f R$", subtotal);
+		String resultado = "Produtos da sacola de compras: \n" + lista + "\n" + subtotalFormatado;
 
 		JOptionPane.showMessageDialog(null, resultado);
 	}
@@ -198,7 +205,7 @@ public class CaixaController {
 	}
 
 	private void finalizarCompra(Set<Produto> listaCompras, Set<Integer> codigosVendas, Set<Venda> vendas,
-			Boolean statusNotaFiscal, String caminhoNotaFiscal) {
+			Boolean statusNotaFiscal, String caminhoNotaFiscal, Set<Produto> produtos) {
 		if (!listaCompras.isEmpty()) {
 			Integer codigoVenda = FluxoDeCaixaService.geradorDeCodigo(codigosVendas);
 
@@ -211,6 +218,10 @@ public class CaixaController {
 
 			if (statusNotaFiscal) {
 				FluxoDeCaixaService.geradorNotaFiscal(novaVenda, caminhoNotaFiscal);
+			}
+
+			if (MenuPrincipalController.statusArquivoAdicionado == true) {
+				ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
 			}
 
 			listaCompras.clear();

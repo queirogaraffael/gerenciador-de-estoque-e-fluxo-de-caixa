@@ -77,38 +77,38 @@ public class EstoqueController {
 
 	private void cadastrarProduto(Set<Produto> produtos) {
 		Produto produto;
-		int opcaoAdicionar = Integer.parseInt(JOptionPane
-				.showInputDialog("1. Adicionar manualmente\n2. Adicionar por arquivo\n3. Desativar arquivo \n4. Voltar"));
+		int opcaoAdicionar = Integer.parseInt(JOptionPane.showInputDialog(
+				"1. Adicionar manualmente\n2. Adicionar por arquivo\n3. Desativar arquivo \n4. Voltar"));
 
 		if (opcaoAdicionar == 1) {
 
-			if (MenuPrincipalController.statusArquivoAdicionado == true) {
-				JOptionPane.showMessageDialog(null, "Desative primeiro o arquivo para poder adicionar manualmente.");
+			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
+
+			if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
+				JOptionPane.showMessageDialog(null,
+						"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
 			} else {
-				Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
+				String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
+				Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
+				Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
 
-				if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
-					JOptionPane.showMessageDialog(null,
-							"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
-				} else {
-					String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
-					Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
-					Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
+				produto = new Produto(codigo, nome, valor, quantidade);
+				ProdutoService.adicionarProduto(produtos, produto);
 
-					produto = new Produto(codigo, nome, valor, quantidade);
-					ProdutoService.adicionarProduto(produtos, produto);
-					JOptionPane.showMessageDialog(null, "Produto adicionada com sucesso!");
+				if (MenuPrincipalController.statusArquivoAdicionado) {
+					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
 				}
+				JOptionPane.showMessageDialog(null, "Produto adicionada com sucesso!");
 			}
 
 		} else if (opcaoAdicionar == 2) {
 
 			String path = JOptionPane.showInputDialog("Digite o caminho do arquivo:");
 			ProdutoService.adicionaProdutoPorArquivo(path, produtos);
-			
+
 			MenuPrincipalController.caminhoArquivoAdicionado = path;
 			MenuPrincipalController.statusArquivoAdicionado = true;
-			
+
 			JOptionPane.showMessageDialog(null, "Produtos por arquivo adicionado com sucesso!");
 
 		} else if (opcaoAdicionar == 3) {

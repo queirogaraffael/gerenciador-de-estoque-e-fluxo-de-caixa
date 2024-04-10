@@ -7,7 +7,7 @@ public class MenuPrincipalView {
 		menu.append("Menu:\n");
 		menu.append("1. Gerenciador de Estoque\n");
 		menu.append("2. Fluxo de Caixa\n");
-		menu.append("3. Sair\n");
+		menu.append("3. Encerrar\n");
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
 	}

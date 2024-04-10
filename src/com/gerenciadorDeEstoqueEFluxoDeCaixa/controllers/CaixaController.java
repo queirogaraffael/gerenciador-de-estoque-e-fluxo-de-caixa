@@ -131,29 +131,26 @@ public class CaixaController {
 
 	private void listarEstoque(Set<Produto> produtos) {
 
-		String Estoque = ComumProdutoVendaService.imprimir(produtos);
-		JOptionPane.showMessageDialog(null, Estoque);
+		String estoque = ComumProdutoVendaService.imprimir(produtos);
+		JOptionPane.showMessageDialog(null, estoque);
 	}
 
 	private void removerProduto(Set<Produto> listaCompras, Set<Produto> produtos) {
 		if (listaCompras.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Carrinho de compras vazio.");
+			JOptionPane.showMessageDialog(null, "Adicione primeiro um produto a sua sacola para poder remover.");
 		} else {
 			Integer codigoProdutoParaRemover = Integer
 					.parseInt(JOptionPane.showInputDialog("Digite o código do produto que você seja remover:"));
 
-			if (listaCompras.isEmpty()) {
-
-				JOptionPane.showMessageDialog(null, "Adicione primeiro um produto a sua sacola para poder remover.");
-			} else if (!ComumProdutoVendaService.jaContem(listaCompras, codigoProdutoParaRemover)) {
+			if (!ComumProdutoVendaService.jaContem(listaCompras, codigoProdutoParaRemover)) {
 				JOptionPane.showMessageDialog(null,
 						"Produto já não constava no gerenciador de estoque. Tente novamente com uma produto existente.");
 
 			} else {
 
 				int quantidade = ProdutoService.quantidadeRealProduto(listaCompras, produtos, codigoProdutoParaRemover);
-				Produto prodrem = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigoProdutoParaRemover);
-				prodrem.setQuantidade(quantidade);
+				Produto prodRem = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigoProdutoParaRemover);
+				prodRem.setQuantidade(quantidade);
 
 				ProdutoService.removeProduto(listaCompras, codigoProdutoParaRemover);
 				JOptionPane.showMessageDialog(null, "Produto removida com sucesso!");
@@ -173,6 +170,7 @@ public class CaixaController {
 
 				Produto prod = ComumProdutoVendaService.retornaPeloCodigo(listaCompras, codigo);
 				Produto produtoEstoque = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
+				
 				int quantidadeRealProduto = prod.getQuantidade() + produtoEstoque.getQuantidade();
 
 				if (quantidadeRealProduto >= novaQuantidade) {

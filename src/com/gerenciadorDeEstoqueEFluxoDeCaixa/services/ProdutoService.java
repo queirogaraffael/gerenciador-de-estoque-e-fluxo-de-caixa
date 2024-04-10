@@ -2,6 +2,7 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class ProdutoService {
 	public static void editaProduto(Produto produtoModificar, String novoNome, Double novoValor, int novaQuantidade) {
 		produtoModificar.setNome(novoNome);
 		produtoModificar.setValor(novoValor);
-		produtoModificar.setQuantidade(null);
+		produtoModificar.setQuantidade(novaQuantidade);
 	}
 
 	// edição. sobrecarga de metodo
@@ -42,7 +43,7 @@ public class ProdutoService {
 
 	}
 
-	public static void adicionaProdutoPorArquivo(String caminho, Set<Produto> listaProdutos) {
+	public static Boolean adicionaProdutoPorArquivo(String caminho, Set<Produto> listaProdutos) {
 
 		try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
 			String line = br.readLine();
@@ -59,9 +60,15 @@ public class ProdutoService {
 
 				line = br.readLine();
 			}
+			return true;
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Arquivo não encontrado: " + caminho);
+			return false;
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Erro de leitura do arquivo: " + e.getMessage());
+			return false;
 		}
+
 	}
 
 	public static void atualizaArquivoProdutos(String caminho, Set<Produto> produtos) {
@@ -76,7 +83,7 @@ public class ProdutoService {
 				bw.newLine();
 			}
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Erro de leitura do arquivo: " + e.getMessage());
 		}
 	}
 

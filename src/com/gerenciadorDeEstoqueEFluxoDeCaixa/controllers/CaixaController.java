@@ -66,7 +66,7 @@ public class CaixaController {
 					break;
 
 				case (ConstantesMenuFluxoCaixa.SAIR):
-					sair(opcaoMenuFluxoDeCaixa);
+					opcaoMenuFluxoDeCaixa = sair(opcaoMenuFluxoDeCaixa);
 
 					break;
 				default:
@@ -170,7 +170,7 @@ public class CaixaController {
 
 				Produto prod = ComumProdutoVendaService.retornaPeloCodigo(listaCompras, codigo);
 				Produto produtoEstoque = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
-				
+
 				int quantidadeRealProduto = prod.getQuantidade() + produtoEstoque.getQuantidade();
 
 				if (quantidadeRealProduto >= novaQuantidade) {
@@ -243,13 +243,14 @@ public class CaixaController {
 		}
 	}
 
-	private void sair(int opcaoMenuFluxoDeCaixa) {
+	private int sair(int opcaoMenuFluxoDeCaixa) {
 		String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
 		boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
 		if (!autenticacao) {
 			JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
-			opcaoMenuFluxoDeCaixa = 0;
+			return 0;
 		}
+		return 8;
 	}
 }

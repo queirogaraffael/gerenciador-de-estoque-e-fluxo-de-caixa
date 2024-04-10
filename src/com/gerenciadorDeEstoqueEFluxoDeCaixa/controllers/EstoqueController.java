@@ -9,6 +9,7 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ComumProdutoVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
@@ -104,12 +105,14 @@ public class EstoqueController {
 		} else if (opcaoAdicionar == 2) {
 
 			String path = JOptionPane.showInputDialog("Digite o caminho do arquivo:");
-			ProdutoService.adicionaProdutoPorArquivo(path, produtos);
+			Boolean adicionado = ProdutoService.adicionaProdutoPorArquivo(path, produtos);
 
-			MenuPrincipalController.caminhoArquivoAdicionado = path;
-			MenuPrincipalController.statusArquivoAdicionado = true;
+			if (adicionado) {
+				MenuPrincipalController.caminhoArquivoAdicionado = path;
+				MenuPrincipalController.statusArquivoAdicionado = true;
 
-			JOptionPane.showMessageDialog(null, "Produtos por arquivo adicionado com sucesso!");
+				JOptionPane.showMessageDialog(null, "Produtos por arquivo adicionado com sucesso!");
+			}
 
 		} else if (opcaoAdicionar == 3) {
 
@@ -217,10 +220,16 @@ public class EstoqueController {
 			String path = JOptionPane
 					.showInputDialog("Entre com o caminho do diretorio que você deseja salvar as notas fiscais: ");
 
-			MenuPrincipalController.caminhoNotaFiscal = path;
-			MenuPrincipalController.statusNotaFiscal = true;
+			boolean autoriza = VerificaDiretorio.verificarDiretorio(path);
 
-			JOptionPane.showMessageDialog(null, "Gerador de notas fiscais ativado com sucesso!");
+			if (autoriza) {
+				MenuPrincipalController.caminhoNotaFiscal = path;
+				MenuPrincipalController.statusNotaFiscal = true;
+
+				JOptionPane.showMessageDialog(null, "Gerador de notas fiscais ativado com sucesso!");
+			} else {
+				JOptionPane.showMessageDialog(null, "Falha ao tentar ativar gerador de notas fiscais.");
+			}
 
 		}
 	}

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 
@@ -49,7 +51,7 @@ public class FluxoDeCaixaService {
 			bw.write(sb.toString());
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Diretorio não encontrado: " + caminho);
 		}
 	}
 

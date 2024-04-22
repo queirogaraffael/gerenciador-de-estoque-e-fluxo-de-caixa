@@ -1,25 +1,45 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.interfaces.InterfaceSuporteMetodosEmComum;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-public class Produto implements InterfaceSuporteMetodosEmComum{
-	private Integer codigo;
+@Entity
+@Table(name = "produtos")
+public class Produto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	private String codigoDeBarra;
 	private String nome;
-	private Double valor;
+	private Double preco;
 	private Integer quantidade;
+	private Integer categoria;
 
-	public Produto(Integer codigo, String nome, Double valor, Integer quantidade) {
-		super();
-		this.codigo = codigo;
-		this.nome = nome;
-		this.valor = valor;
-		this.quantidade = quantidade;
+	@OneToMany(mappedBy = "id.produto")
+	private Set<ItemVenda> itens = new HashSet<>();
+
+	public Produto() {
+
 	}
 
-	public Integer getCodigo() {
-		return codigo;
+	public Produto(String codigoDeBarra, String nome, Double preco, Integer quantidade, Integer categoria) {
+		this.codigoDeBarra = codigoDeBarra;
+		this.nome = nome;
+		this.preco = preco;
+		this.quantidade = quantidade;
+		this.categoria = categoria;
+	}
+
+	public String getcodigoDeBarra() {
+		return codigoDeBarra;
 	}
 
 	public String getNome() {
@@ -30,8 +50,8 @@ public class Produto implements InterfaceSuporteMetodosEmComum{
 		this.nome = nome;
 	}
 
-	public Double getValor() {
-		return valor;
+	public Double getpreco() {
+		return preco;
 	}
 
 	public Integer getQuantidade() {
@@ -42,13 +62,21 @@ public class Produto implements InterfaceSuporteMetodosEmComum{
 		this.quantidade = quantidade;
 	}
 
-	public void setValor(Double valor) {
-		this.valor = valor;
+	public void setpreco(Double preco) {
+		this.preco = preco;
+	}
+
+	public Integer getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Integer categoria) {
+		this.categoria = categoria;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codigo);
+		return Objects.hash(codigoDeBarra);
 	}
 
 	@Override
@@ -60,13 +88,13 @@ public class Produto implements InterfaceSuporteMetodosEmComum{
 		if (getClass() != obj.getClass())
 			return false;
 		Produto other = (Produto) obj;
-		return Objects.equals(codigo, other.codigo);
+		return Objects.equals(codigoDeBarra, other.codigoDeBarra);
 	}
 
 	@Override
 	public String toString() {
-		return "Produto: código = " + codigo + ", nome = " + nome + ", valor = " + String.format("%.2f", valor)
-				+ ", quantidade = " + quantidade;
+		return "Produto: codigo de barra = " + codigoDeBarra + ", nome = " + nome + ", preco = "
+				+ String.format("%.2f", preco) + ", quantidade = " + quantidade + ", Categoria = " + categoria;
 	}
 
 }

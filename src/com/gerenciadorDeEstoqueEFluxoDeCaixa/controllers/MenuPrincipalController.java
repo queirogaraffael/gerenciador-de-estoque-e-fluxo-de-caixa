@@ -1,20 +1,13 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuPrincipal;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.MenuPrincipalView;
 
 public class MenuPrincipalController {
-	private Set<Produto> produtos;
-	private Set<Venda> vendas;
-	private Set<Integer> codigosVendas;
 
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
@@ -22,18 +15,11 @@ public class MenuPrincipalController {
 	protected static Boolean statusNotaFiscal;
 	protected static String caminhoNotaFiscal;
 
-	protected static Boolean statusArquivoAdicionado;
-	protected static String caminhoArquivoAdicionado;
-
 	public MenuPrincipalController() {
-		produtos = new HashSet<>();
-		vendas = new HashSet<>();
-		codigosVendas = new HashSet<>();
 		estoqueController = new EstoqueController();
 		caixaController = new CaixaController();
 		statusNotaFiscal = false;
 		caminhoNotaFiscal = "";
-		statusArquivoAdicionado = false;
 	}
 
 	public void exibirMenuPrincipal() {
@@ -50,25 +36,28 @@ public class MenuPrincipalController {
 					boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
 					if (autenticacao) {
-						estoqueController.gerenciadorEstoque(produtos, vendas, statusNotaFiscal, caminhoNotaFiscal);
+						estoqueController.gerenciadorEstoque(statusNotaFiscal, caminhoNotaFiscal);
 					} else {
 						JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
 					}
 
 					break;
 				case (ConstantesMenuPrincipal.FLUXO_CAIXA):
-					caixaController.fluxoDeCaixa(produtos, vendas, codigosVendas, statusNotaFiscal, caminhoNotaFiscal);
+					caixaController.fluxoDeCaixa(statusNotaFiscal, caminhoNotaFiscal);
 					break;
 				case (ConstantesMenuPrincipal.SAIR):
+
+					EntityManagerFactoryService.fecharEntityManagerFactory();
+
 					JOptionPane.showMessageDialog(null, "Fim do programa");
 					System.exit(0);
 				default:
-					JOptionPane.showMessageDialog(null, "Opção inválida. Tente novamente!");
+					JOptionPane.showMessageDialog(null, "Op��o invalida. Tente novamente!");
 				}
 
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null,
-						"Entrada inválida. Por favor, insira um número correspondente à opção desejada.");
+						"Entrada invalida. Por favor, insira um numero correspondente a�opcao desejada.");
 			}
 
 		} while (opcaoMenuPrincipal != ConstantesMenuPrincipal.SAIR);

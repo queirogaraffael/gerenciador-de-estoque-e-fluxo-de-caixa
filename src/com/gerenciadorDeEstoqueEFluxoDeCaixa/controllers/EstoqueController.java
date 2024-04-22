@@ -1,21 +1,18 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
-import java.util.Set;
-
 import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuEstoque;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ComumProdutoVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
 
-	public void gerenciadorEstoque(Set<Produto> produtos, Set<Venda> vendas, Boolean statusNotaFiscal,
-			String caminhoNotaFiscal) {
+	public void gerenciadorEstoque(Boolean statusNotaFiscal, String caminhoNotaFiscal) {
 
 		int opcao = 0;
 
@@ -28,22 +25,22 @@ public class EstoqueController {
 
 				case (ConstantesMenuEstoque.CADASTRAR):
 
-					cadastrarProduto(produtos);
+					cadastrarProduto();
 					break;
 
 				case (ConstantesMenuEstoque.EDITAR):
 
-					editarProduto(produtos);
+					editarProduto();
 					break;
 
 				case (ConstantesMenuEstoque.LISTAGEM):
 
-					listarProdutos(produtos);
+					listarProdutos();
 					break;
 
 				case (ConstantesMenuEstoque.REMOVER):
 
-					removerProduto(produtos);
+					removerProduto();
 					break;
 
 				case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
@@ -53,163 +50,102 @@ public class EstoqueController {
 
 				case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
 
-					listarVendas(vendas);
+					listarVendas();
 					break;
 
 				case (ConstantesMenuEstoque.DETALHES_VENDA):
 
-					detalharVenda(vendas);
+					detalharVenda();
 					break;
 
 				case (ConstantesMenuEstoque.VOLTAR):
 					break;
 
 				default:
-					JOptionPane.showMessageDialog(null, "Opção inválida. Tente outra!");
+					JOptionPane.showMessageDialog(null, "Opcao invalida. Tente outra!");
 					break;
 				}
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null,
-						"Entrada inválida. Por favor, insira um número correspondente à opção desejada.");
+						"Entrada invalida. Por favor, insira um numero correspondente a�op��o desejada.");
 			}
 
 		} while (opcao != ConstantesMenuEstoque.VOLTAR);
 	}
 
-	private void cadastrarProduto(Set<Produto> produtos) {
-		Produto produto;
-		int opcaoAdicionar = Integer.parseInt(JOptionPane.showInputDialog(
-				"1. Adicionar manualmente\n2. Adicionar por arquivo\n3. Desativar arquivo \n4. Voltar"));
+	private void cadastrarProduto() {
 
-		if (opcaoAdicionar == 1) {
+		String codigoBarra = JOptionPane.showInputDialog("Digite o codigo de barra do produto: ");
 
-			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Código do produto: "));
+		if (ProdutoService.contemProduto(codigoBarra)) {
+			JOptionPane.showMessageDialog(null, "Produto ja cadastrado anteriormente.");
+		} else {
 
-			if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
-				JOptionPane.showMessageDialog(null,
-						"O produto já foi cadastrado anteriormente. Por favor, insira um novo produto!");
-			} else {
-				String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
-				Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
-				Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
+			String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
+			Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
+			Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
+			Integer categoria = Integer.parseInt(JOptionPane.showInputDialog("Categoria do produto: "));
 
-				produto = new Produto(codigo, nome, valor, quantidade);
-				ProdutoService.adicionarProduto(produtos, produto);
-
-				if (MenuPrincipalController.statusArquivoAdicionado) {
-					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
-				}
-				JOptionPane.showMessageDialog(null, "Produto adicionada com sucesso!");
-			}
-
-		} else if (opcaoAdicionar == 2) {
-
-			String path = JOptionPane.showInputDialog("Digite o caminho do arquivo:");
-			Boolean adicionado = ProdutoService.adicionaProdutoPorArquivo(path, produtos);
-
-			if (adicionado) {
-				MenuPrincipalController.caminhoArquivoAdicionado = path;
-				MenuPrincipalController.statusArquivoAdicionado = true;
-
-				JOptionPane.showMessageDialog(null, "Produtos por arquivo adicionado com sucesso!");
-			}
-
-		} else if (opcaoAdicionar == 3) {
-
-			if (MenuPrincipalController.statusArquivoAdicionado == false) {
-				JOptionPane.showInternalMessageDialog(null, "Arquivo já estava desativado.");
-			} else {
-				MenuPrincipalController.statusArquivoAdicionado = false;
-				JOptionPane.showInternalMessageDialog(null, "Arquivo desativado.");
-			}
+			ProdutoService.adicionaProduto(new Produto(codigoBarra, nome, valor, quantidade, categoria));
 
 		}
+
 	}
 
-	private void editarProduto(Set<Produto> produtos) {
-		int opcaoEditar = Integer.parseInt(JOptionPane
-				.showInputDialog("1. Modificar o nome, o valor e a quantidade.\n2. Apenas a quantidade.\n3. Voltar"));
+	private void editarProduto() {
 
-		if (opcaoEditar == 1) {
+		int opcaoEditar = Integer.parseInt(JOptionPane.showInputDialog(
+				"1. Modificar o nome\n2. Modificar o preco\n3. Modificar a quantidade\n4. Modificar a categoria"));
 
-			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do produto: "));
+		String codigo = JOptionPane.showInputDialog("Digite o codigo do produto: ");
 
-			if (!ComumProdutoVendaService.jaContem(produtos, codigo)) {
-				JOptionPane.showMessageDialog(null, "Produto inválido. Tente outro!");
-			} else {
+		Produto produto = ProdutoService.retornaProdutoPorCodigo(codigo);
 
-				String novoNome = JOptionPane.showInputDialog("Digite o novo nome do produto: ");
-				Double novoValor = Double.parseDouble(JOptionPane.showInputDialog("Digite o novo valor do produto: "));
-				Integer novaQuantidade = Integer
-						.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade do produto: "));
-
-				Produto produtoModificar = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
-				ProdutoService.editaProduto(produtoModificar, novoNome, novoValor, novaQuantidade);
-
-				if (MenuPrincipalController.statusArquivoAdicionado == true) {
-					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
-				}
-
-				JOptionPane.showMessageDialog(null, "Produto modificado com sucesso!");
+		if (ProdutoService.contemProduto(codigo)) {
+			if (opcaoEditar == 1) {
+				String novoNome = JOptionPane.showInputDialog("Digite o novo nome: ");
+				produto.setNome(novoNome);
+				ProdutoService.atualizaProduto(produto);
+			} else if (opcaoEditar == 2) {
+				Double novoPreco = Double.valueOf(JOptionPane.showInputDialog("Digite o novo preco: "));
+				produto.setpreco(novoPreco);
+				ProdutoService.atualizaProduto(produto);
+			} else if (opcaoEditar == 3) {
+				Integer novaQuantidade = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade: "));
+				produto.setQuantidade(novaQuantidade);
+				ProdutoService.atualizaProduto(produto);
+			} else if (opcaoEditar == 4) {
+				Integer novaCategoria = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova categoria: "));
+				produto.setCategoria(novaCategoria);
+				ProdutoService.atualizaProduto(produto);
 			}
-
-		} else if (opcaoEditar == 2) {
-			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Digite o código do produto: "));
-
-			if (ComumProdutoVendaService.jaContem(produtos, codigo)) {
-				Integer novaQuatidade = Integer
-						.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade do produto: "));
-				Produto produtoModificar = ComumProdutoVendaService.retornaPeloCodigo(produtos, codigo);
-				ProdutoService.editaProduto(produtoModificar, novaQuatidade);
-
-				if (MenuPrincipalController.statusArquivoAdicionado == true) {
-					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
-				}
-
-				JOptionPane.showMessageDialog(null, "Quantidade modificada com sucesso!");
-			} else {
-				JOptionPane.showMessageDialog(null, "Produto não cadastrado ainda. Tente outro!");
-			}
-
+		} else {
+			JOptionPane.showMessageDialog(null, "Produto nao cadastrado ainda. Tente outro!");
 		}
+
 	}
 
-	private void listarProdutos(Set<Produto> produtos) {
+	private void listarProdutos() {
 
-		if (produtos.isEmpty()) {
+		if (ProdutoService.tabelaProdutoEstaVazia()) {
 			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
 		} else {
-			String resultado = ComumProdutoVendaService.imprimir(produtos);
+
+			Integer categoria_id = Integer.parseInt(JOptionPane.showInputDialog("Digite a categoria: "));
+
+			String resultado = ProdutoService.imprimeProdutos(categoria_id);
+
 			JOptionPane.showMessageDialog(null, resultado);
 		}
 
 	}
 
-	private void removerProduto(Set<Produto> produtos) {
+	private void removerProduto() {
 
-		if (produtos.isEmpty()) {
+		String codigoProdutoParaRemover = JOptionPane
+				.showInputDialog("Digite o codigo do produto que voce deseja remover:");
 
-			JOptionPane.showMessageDialog(null, "Adicione primeiro um produto para poder remover.");
-		} else {
-			Integer codigoProdutoParaRemover = Integer
-					.parseInt(JOptionPane.showInputDialog("Digite o código do produto que você seja remover:"));
-			if (!ComumProdutoVendaService.jaContem(produtos, codigoProdutoParaRemover)) {
-				JOptionPane.showMessageDialog(null,
-						"Produto já não constava no gerenciador de estoque. Tente novamente com uma produto existente.");
-
-			} else {
-				ProdutoService.removeProduto(produtos, codigoProdutoParaRemover);
-
-				if (MenuPrincipalController.statusArquivoAdicionado == true) {
-					ProdutoService.atualizaArquivoProdutos(MenuPrincipalController.caminhoArquivoAdicionado, produtos);
-				}
-
-				JOptionPane.showMessageDialog(null, "Produto removida com sucesso!");
-
-			}
-
-		}
-
+		ProdutoService.removeProduto(codigoProdutoParaRemover);
 	}
 
 	private void ativadorNotaFiscal(String caminhoNotaFiscal, Boolean statusNotaFiscal) {
@@ -234,11 +170,11 @@ public class EstoqueController {
 		}
 	}
 
-	private void listarVendas(Set<Venda> vendas) {
+	private void listarVendas() {
 
-		if (!vendas.isEmpty()) {
+		if (!VendaService.tabelaVendaEstaVazia()) {
 
-			String resultadoListagemVendas = ComumProdutoVendaService.imprimir(vendas);
+			String resultadoListagemVendas = VendaService.imprimeVendas();
 			JOptionPane.showMessageDialog(null, resultadoListagemVendas);
 
 		} else {
@@ -246,19 +182,18 @@ public class EstoqueController {
 		}
 	}
 
-	private void detalharVenda(Set<Venda> vendas) {
-		if (!vendas.isEmpty()) {
+//botar para imprimir os itens
+	private void detalharVenda() {
+		if (!VendaService.tabelaVendaEstaVazia()) {
 
 			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Codigo de venda: "));
+			Venda venda = VendaService.retornaVendaPorCodigo(codigo);
 
-			if (ComumProdutoVendaService.jaContem(vendas, codigo)) {
-
-				Venda venda = ComumProdutoVendaService.retornaPeloCodigo(vendas, codigo);
-
+			if (venda != null) {
 				JOptionPane.showMessageDialog(null, venda);
 
 			} else {
-				JOptionPane.showMessageDialog(null, "Venda inválida. Tente outra!");
+				JOptionPane.showMessageDialog(null, "Venda invalida. Tente outra!");
 			}
 
 		} else {

@@ -1,5 +1,6 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,12 +9,29 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.interfaces.InterfaceSuporteMetodosEmComum;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-public class Venda implements InterfaceSuporteMetodosEmComum{
+@Entity
+@Table(name = "vendas")
+public class Venda implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigo;
 	private Instant instant;
-	private Set<Produto> produtos = new HashSet<>();
+
+	@OneToMany(mappedBy = "id.venda")
+	private Set<ItemVenda> itens = new HashSet<>();
+
+	public Venda() {
+	}
 
 	public Venda(Integer codigo, Instant instant) {
 		super();
@@ -29,39 +47,42 @@ public class Venda implements InterfaceSuporteMetodosEmComum{
 		this.codigo = codigo;
 	}
 
+	public Venda(Instant instant) {
+		this.instant = instant;
+	}
+
 	public String getInstant() {
 		DateTimeFormatter formatoDataHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
 		return formatoDataHora.format(zonedDateTime);
 	}
 
-	public Set<Produto> getProdutos() {
-		return produtos;
+	public Set<ItemVenda> getProdutosVendidos() {
+		return itens;
 	}
 
-	public Double valorTotal() {
+	public Double total() {
 		double total = 0;
-		for (Produto p : produtos) {
-			total += p.getValor() * p.getQuantidade();
+		for (ItemVenda p : itens) {
+			total += p.subTotal();
 		}
 		return total;
 	}
 
-	public int quantidadeTotalItens() {
-		int quantidadeTotal = 0;
-		for (Produto p : produtos) {
-			quantidadeTotal += p.getQuantidade();
-		}
-		return quantidadeTotal;
-	}
-
+//melhorar isso aqui
 	public void listarProdutos() {
 
 		StringBuilder sb = new StringBuilder();
-		for (Produto p : produtos) {
-			sb.append("Codigo: " + p.getCodigo() + ", nome = " + p.getNome() + ", valor = " + String
-					.format(", valor total %.2f", valorTotal() + ", quantidade total: " + quantidadeTotalItens()));
+
+		sb.append("Codigo venda: " + String.format("%d,", codigo) + "Data: " + getInstant() + "\n");
+
+		for (ItemVenda p : itens) {
+			sb.append("Codigo: " + p.getProduto().getcodigoDeBarra() + ", nome = " + p.getProduto().getNome()
+					+ "Quantidade: " + String.format("%d, ", p.getQuantidade()) + "Total: "
+					+ String.format("%d", p.subTotal()) + "\n");
+
 		}
+
 	}
 
 	@Override
@@ -83,8 +104,7 @@ public class Venda implements InterfaceSuporteMetodosEmComum{
 
 	@Override
 	public String toString() {
-		return "Venda: codigo = " + codigo
-				+ String.format(", Valor Total: %.2f R$, Data: %s\n", valorTotal(), getInstant());
+		return "Venda [codigo=" + codigo + ", instant=" + instant + "]";
 	}
 
 }

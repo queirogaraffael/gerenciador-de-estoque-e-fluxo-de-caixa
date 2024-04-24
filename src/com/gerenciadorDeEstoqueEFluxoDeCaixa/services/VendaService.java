@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,8 +27,23 @@ public class VendaService {
 			entityManager.getTransaction().commit();
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			JOptionPane.showMessageDialog(null, "Problemas em adicionar o produto" + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Problemas em adicionar a venda" + e.getMessage());
+		} finally {
+			entityManager.close();
+		}
+
+	}
+
+	public static void atualizaVenda(Venda venda) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		try {
+			entityManager.merge(venda);
+			entityManager.getTransaction().commit();
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Problemas em atualizar venda" + e.getMessage());
 		} finally {
 			entityManager.close();
 		}
@@ -49,6 +65,7 @@ public class VendaService {
 		}
 	}
 
+	// ela n imprime, ela retorna. observar se o nome condiz
 	public static String imprimeVendas() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -66,7 +83,6 @@ public class VendaService {
 			return sb.toString();
 
 		} catch (Exception e) {
-			System.out.println("Erro: " + e);
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
 			return "";
 		} finally {
@@ -75,10 +91,10 @@ public class VendaService {
 
 	}
 
+	// ver se esse e o melhor metodo a se fazer (pegar todas as vendas para verificar se a tabela esta vazia)
 	public static boolean tabelaVendaEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
-
 		entityManager.getTransaction().begin();
 
 		try {
@@ -93,7 +109,7 @@ public class VendaService {
 		return false;
 
 	}
-
+//melhora esse daqui pois vc pode pegar essas partes de outras funcoes
 	public static void geradorNotaFiscal(Venda venda, String caminho) {
 		String codigo = String.valueOf(venda.getCodigo()) + ".txt";
 
@@ -102,7 +118,7 @@ public class VendaService {
 		sb.append("Codigo venda: ").append(venda.getCodigo()).append(" , Data: ").append(venda.getInstant())
 				.append("\n");
 
-		List<ItemVenda> itensVenda = ItemVendaService.retornaItensVenda(venda);
+		Set<ItemVenda> itensVenda = ItemVendaService.retornaItensVenda(venda);
 
 		for (ItemVenda p : itensVenda) {
 			sb.append("Codigo: " + p.getProduto().getcodigoDeBarra() + ", nome = " + p.getProduto().getNome()

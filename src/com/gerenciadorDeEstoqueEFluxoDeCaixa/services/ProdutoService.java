@@ -30,6 +30,23 @@ public class ProdutoService {
 
 	}
 
+	public static void atualizaProduto(Produto produto) {
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		try {
+			entityManager.merge(produto);
+			entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+
+			JOptionPane.showMessageDialog(null, "Problema na atuzalizaca do produto." + e.getMessage());
+		} finally {
+			entityManager.close();
+		}
+
+	}
+
 	// remove produto pelo codigo
 	public static void removeProduto(String codigo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -68,43 +85,7 @@ public class ProdutoService {
 		}
 	}
 
-	public static void atualizaProduto(Produto produto) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		entityManager.getTransaction().begin();
-
-		try {
-			entityManager.merge(produto);
-			entityManager.getTransaction().commit();
-		} catch (Exception e) {
-			entityManager.getTransaction().rollback();
-			JOptionPane.showMessageDialog(null, "Problema na atuzalizaca do produto." + e.getMessage());
-		} finally {
-			entityManager.close();
-		}
-
-	}
-
-	public static boolean contemProduto(String codigo) {
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-
-		try {
-			Produto produto = entityManager.find(Produto.class, codigo);
-
-			if (produto == null) {
-				return false;
-			} else {
-				return true;
-			}
-
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas ao verificar se o produto ja existe" + e.getMessage());
-			return false;
-		} finally {
-			entityManager.close();
-		}
-
-	}
-
+// não imprime, retorna
 	public static String imprimeProdutos(Integer categoria) {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -124,7 +105,6 @@ public class ProdutoService {
 			return sb.toString();
 
 		} catch (Exception e) {
-
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
 		} finally {
 			entityManager.close();
@@ -132,6 +112,7 @@ public class ProdutoService {
 		return "";
 	}
 
+// faz sentido trazer todos os produtos paraverificar se esta vazia ?
 	public static boolean tabelaProdutoEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -143,7 +124,6 @@ public class ProdutoService {
 			return produtos.isEmpty();
 
 		} catch (Exception e) {
-			System.out.println("Erro: " + e);
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
 		} finally {
 			entityManager.close();

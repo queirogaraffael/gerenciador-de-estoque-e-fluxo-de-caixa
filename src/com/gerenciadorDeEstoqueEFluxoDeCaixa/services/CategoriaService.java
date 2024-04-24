@@ -10,16 +10,24 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Categoria;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
 
 public class CategoriaService {
-	
+
 	private static EntityManagerFactory entityManagerFactory = EntityManagerFactoryService.entityManagerFactory();
 
-	public static List<Categoria> categorias() {
+	public static Object[] categorias() {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
 		try {
-			List<Categoria> categorias = entityManager.createQuery("FROM categorias", Categoria.class).getResultList();
-			return categorias;
+			List<Categoria> categorias = entityManager.createQuery("FROM Categoria", Categoria.class).getResultList();
+
+			Object[] ArrayCategorias = new Object[categorias.size()];
+
+			for (int i = 0; i < categorias.size(); i++) {
+				ArrayCategorias[i] = categorias.get(i).toString();
+			}
+
+			return ArrayCategorias;
+
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
 		} finally {
@@ -29,20 +37,17 @@ public class CategoriaService {
 
 	}
 
-	public static Categoria retornaCategoriaPeloId(Integer id) {
+	public static Integer retornaIdCategoria() {
 
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		Object[] categorias = CategoriaService.categorias();
 
-		try {
-			return entityManager.find(Categoria.class, id);
+		Object resultadoCategoria = JOptionPane.showInputDialog(null, "Escolha uma categoria", "Categorias",
+				JOptionPane.INFORMATION_MESSAGE, null, categorias, categorias[0]);
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas ao buscar por categoria" + e.getMessage());
-			return null;
+		String[] categoriaDado = resultadoCategoria.toString().split(" - ");
 
-		} finally {
-			entityManager.close();
-		}
+		int categoria = Integer.parseInt(categoriaDado[0]);
+		return categoria;
 	}
 
 }

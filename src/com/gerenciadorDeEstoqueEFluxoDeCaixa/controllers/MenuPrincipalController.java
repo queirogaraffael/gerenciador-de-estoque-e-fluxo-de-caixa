@@ -5,13 +5,14 @@ import javax.swing.JOptionPane;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuPrincipal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.MenuPrincipalView;
 
 public class MenuPrincipalController {
 
+	
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
 
+	// melhorar a comunicao daqui
 	protected static Boolean statusNotaFiscal;
 	protected static String caminhoNotaFiscal;
 
@@ -22,45 +23,38 @@ public class MenuPrincipalController {
 		caminhoNotaFiscal = "";
 	}
 
+//ADICIONAR LOCALE
 	public void exibirMenuPrincipal() {
 		int opcaoMenuPrincipal = 0;
+		Object[] opcoes = { "Gerenciador de Estoque", "Fluxo de Caixa", "Encerrar" };
 
 		do {
-			try {
-				opcaoMenuPrincipal = Integer
-						.parseInt(JOptionPane.showInputDialog(MenuPrincipalView.exibirMenuPrincipal()));
 
-				switch (opcaoMenuPrincipal) {
-				case (ConstantesMenuPrincipal.GERENCIADOR_ESTOQUE):
-					String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
-					boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
+			opcaoMenuPrincipal = JOptionPane.showOptionDialog(null, "Escolha uma opcao: ", "Menu Principal",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
 
-					if (autenticacao) {
-						estoqueController.gerenciadorEstoque(statusNotaFiscal, caminhoNotaFiscal);
-					} else {
-						JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
-					}
+			switch (opcaoMenuPrincipal) {
+			case (ConstantesMenuPrincipal.GERENCIADOR_ESTOQUE):
+				String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
+				boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
-					break;
-				case (ConstantesMenuPrincipal.FLUXO_CAIXA):
-					caixaController.fluxoDeCaixa(statusNotaFiscal, caminhoNotaFiscal);
-					break;
-				case (ConstantesMenuPrincipal.SAIR):
-
-					EntityManagerFactoryService.fecharEntityManagerFactory();
-
-					JOptionPane.showMessageDialog(null, "Fim do programa");
-					System.exit(0);
-				default:
-					JOptionPane.showMessageDialog(null, "Opção invalida. Tente novamente!");
+				if (autenticacao) {
+					estoqueController.gerenciadorEstoque(caminhoNotaFiscal);
+				} else {
+					JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
 				}
 
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null,
-						"Entrada invalida. Por favor, insira um numero correspondente a opcao desejada.");
-			}
+				break;
+			case (ConstantesMenuPrincipal.FLUXO_CAIXA):
+				caixaController.fluxoDeCaixa(statusNotaFiscal, caminhoNotaFiscal);
+				break;
+			default:
 
+				EntityManagerFactoryService.fecharEntityManagerFactory();
+
+				JOptionPane.showMessageDialog(null, "Fim do programa");
+				System.exit(0);
+			}
 		} while (opcaoMenuPrincipal != ConstantesMenuPrincipal.SAIR);
 	}
-
 }

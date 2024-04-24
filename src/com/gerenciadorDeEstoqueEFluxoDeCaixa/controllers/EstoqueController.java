@@ -1,10 +1,15 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
+import java.util.Set;
+
 import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuEstoque;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
@@ -12,7 +17,7 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
 
-	public void gerenciadorEstoque(Boolean statusNotaFiscal, String caminhoNotaFiscal) {
+	public void gerenciadorEstoque(String caminhoNotaFiscal) {
 
 		int opcao = 0;
 
@@ -45,7 +50,7 @@ public class EstoqueController {
 
 				case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
 
-					ativadorNotaFiscal(caminhoNotaFiscal, statusNotaFiscal);
+					ativadorNotaFiscal(caminhoNotaFiscal);
 					break;
 
 				case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
@@ -77,14 +82,15 @@ public class EstoqueController {
 
 		String codigoBarra = JOptionPane.showInputDialog("Digite o codigo de barra do produto: ");
 
-		if (ProdutoService.contemProduto(codigoBarra)) {
+		if (ProdutoService.retornaProdutoPorCodigo(codigoBarra) != null) {
 			JOptionPane.showMessageDialog(null, "Produto ja cadastrado anteriormente.");
 		} else {
 
 			String nome = JOptionPane.showInputDialog("Digite o nome do produto: ");
 			Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
 			Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
-			Integer categoria = Integer.parseInt(JOptionPane.showInputDialog("Categoria do produto: "));
+
+			int categoria = CategoriaService.retornaIdCategoria();
 
 			ProdutoService.adicionaProduto(new Produto(codigoBarra, nome, valor, quantidade, categoria));
 
@@ -94,33 +100,38 @@ public class EstoqueController {
 
 	private void editarProduto() {
 
-		int opcaoEditar = Integer.parseInt(JOptionPane.showInputDialog(
-				"1. Modificar o nome\n2. Modificar o preco\n3. Modificar a quantidade\n4. Modificar a categoria"));
+		Object[] opcoes = { "Nome", "Preco", "Quantidade", "Categoria", "Voltar" };
 
-		String codigo = JOptionPane.showInputDialog("Digite o codigo do produto: ");
+		int opcaoEditar = JOptionPane.showOptionDialog(null, "Escolha uma opcao para modificar: ", "Modificar",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
 
-		Produto produto = ProdutoService.retornaProdutoPorCodigo(codigo);
+		if (opcaoEditar != 4) {
+			String codigo = JOptionPane.showInputDialog("Digite o codigo do produto: ");
 
-		if (ProdutoService.contemProduto(codigo)) {
-			if (opcaoEditar == 1) {
-				String novoNome = JOptionPane.showInputDialog("Digite o novo nome: ");
-				produto.setNome(novoNome);
-				ProdutoService.atualizaProduto(produto);
-			} else if (opcaoEditar == 2) {
-				Double novoPreco = Double.valueOf(JOptionPane.showInputDialog("Digite o novo preco: "));
-				produto.setpreco(novoPreco);
-				ProdutoService.atualizaProduto(produto);
-			} else if (opcaoEditar == 3) {
-				Integer novaQuantidade = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade: "));
-				produto.setQuantidade(novaQuantidade);
-				ProdutoService.atualizaProduto(produto);
-			} else if (opcaoEditar == 4) {
-				Integer novaCategoria = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova categoria: "));
-				produto.setCategoria(novaCategoria);
-				ProdutoService.atualizaProduto(produto);
+			Produto produto = ProdutoService.retornaProdutoPorCodigo(codigo);
+
+			if (ProdutoService.retornaProdutoPorCodigo(codigo) != null) {
+				if (opcaoEditar == 0) {
+					String novoNome = JOptionPane.showInputDialog("Digite o novo nome: ");
+					produto.setNome(novoNome);
+					ProdutoService.atualizaProduto(produto);
+				} else if (opcaoEditar == 1) {
+					Double novoPreco = Double.valueOf(JOptionPane.showInputDialog("Digite o novo preco: "));
+					produto.setpreco(novoPreco);
+					ProdutoService.atualizaProduto(produto);
+				} else if (opcaoEditar == 2) {
+					Integer novaQuantidade = Integer
+							.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade: "));
+					produto.setQuantidade(novaQuantidade);
+					ProdutoService.atualizaProduto(produto);
+				} else if (opcaoEditar == 3) {
+					Integer novaCategoria = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova categoria: "));
+					produto.setCategoria(novaCategoria);
+					ProdutoService.atualizaProduto(produto);
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Produto nao cadastrado ainda. Tente outro!");
 			}
-		} else {
-			JOptionPane.showMessageDialog(null, "Produto nao cadastrado ainda. Tente outro!");
 		}
 
 	}
@@ -131,9 +142,9 @@ public class EstoqueController {
 			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
 		} else {
 
-			Integer categoria_id = Integer.parseInt(JOptionPane.showInputDialog("Digite a categoria: "));
+			int categoria = CategoriaService.retornaIdCategoria();
 
-			String resultado = ProdutoService.imprimeProdutos(categoria_id);
+			String resultado = ProdutoService.imprimeProdutos(categoria);
 
 			JOptionPane.showMessageDialog(null, resultado);
 		}
@@ -148,28 +159,40 @@ public class EstoqueController {
 		ProdutoService.removeProduto(codigoProdutoParaRemover);
 	}
 
-	private void ativadorNotaFiscal(String caminhoNotaFiscal, Boolean statusNotaFiscal) {
-		int status = Integer
-				.parseInt(JOptionPane.showInputDialog("Deseja ativar o gerador de notas fiscais ?\n1. Sim\n2. NÃ£o"));
-		if (status == 1) {
+	private void ativadorNotaFiscal(String caminhoNotaFiscal) {
+		Object[] opcoes = { "Sim", "Nao" };
 
-			String path = JOptionPane
-					.showInputDialog("Entre com o caminho do diretorio que vocÃª deseja salvar as notas fiscais: ");
+		String mensagem = MenuPrincipalController.statusNotaFiscal ? "Deseja modificar o diretório?"
+				: "Ativar gerador de nota fiscal ?";
 
-			boolean autoriza = VerificaDiretorio.verificarDiretorio(path);
+		int opcao = JOptionPane.showOptionDialog(null, mensagem, "Opcoes", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
 
-			if (autoriza) {
+		if (opcao == 0) {
+			String path = JOptionPane.showInputDialog("Caminho do diretorio: ");
+
+			if (VerificaDiretorio.verificarDiretorio(path)) {
+
 				MenuPrincipalController.caminhoNotaFiscal = path;
 				MenuPrincipalController.statusNotaFiscal = true;
 
-				JOptionPane.showMessageDialog(null, "Gerador de notas fiscais ativado com sucesso!");
+				String msg = MenuPrincipalController.statusNotaFiscal
+						? "Gerador de notas fiscais com novo diretório ativado com sucesso!"
+						: "Gerador de notas fiscais ativado com sucesso!";
+				JOptionPane.showMessageDialog(null, msg);
 			} else {
-				JOptionPane.showMessageDialog(null, "Falha ao tentar ativar gerador de notas fiscais.");
+
+				String msg = MenuPrincipalController.statusNotaFiscal
+						? "Falha ao tentar ativar o novo diretorio do gerador de notas fiscais."
+						: "Falha ao tentar ativar gerador de notas fiscais.";
+				JOptionPane.showMessageDialog(null, msg);
+
 			}
 
 		}
-	}
 
+	}
+// adicionar pra ver apenas por data
 	private void listarVendas() {
 
 		if (!VendaService.tabelaVendaEstaVazia()) {
@@ -182,7 +205,7 @@ public class EstoqueController {
 		}
 	}
 
-//botar para imprimir os itens
+	// melhorar aqui
 	private void detalharVenda() {
 		if (!VendaService.tabelaVendaEstaVazia()) {
 
@@ -190,7 +213,14 @@ public class EstoqueController {
 			Venda venda = VendaService.retornaVendaPorCodigo(codigo);
 
 			if (venda != null) {
-				JOptionPane.showMessageDialog(null, venda);
+
+				Set<ItemVenda> itens = ItemVendaService.retornaItensVenda(venda);
+
+				String itensVenda = ItemVendaService.imprime(itens);
+
+				String resultado = itensVenda + "\n" + venda.toString();
+
+				JOptionPane.showMessageDialog(null, resultado);
 
 			} else {
 				JOptionPane.showMessageDialog(null, "Venda invalida. Tente outra!");

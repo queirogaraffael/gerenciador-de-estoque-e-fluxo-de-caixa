@@ -10,11 +10,12 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuFluxoCaixa
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 
 public class CaixaController {
 
@@ -83,13 +84,53 @@ public class CaixaController {
 		} while (opcaoMenuFluxoDeCaixa != ConstantesMenuFluxoCaixa.SAIR);
 	}
 
+	// melhorar a qualidade// ta muito grande
 	private void adicionaProduto(Set<ItemVenda> listaCompras) {
 		String codigoProduto = JOptionPane
 				.showInputDialog("Digite o codigo do produto que voce deseja adicionar a lista de compras");
 
 		if (ItemVendaService.contemProduto(listaCompras, codigoProduto)) {
-			JOptionPane.showMessageDialog(null,
-					"Se voce deseja modificar a quantidade desse produto, va na opcao 5. Modificar quantidade de um produto");
+
+			Integer novaQuantidade = Integer.parseInt(JOptionPane.showInputDialog(
+					"Produto ja adicionado anteriormente, digite a nova quantidade que voce deseja: "));
+
+			ItemVenda prod = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras, codigoProduto);
+
+			Produto produtoEstoque = ProdutoService.retornaProdutoPorCodigo(codigoProduto);
+
+			int quantidadeRealProduto = prod.getQuantidade() + produtoEstoque.getQuantidade();
+
+			if (quantidadeRealProduto >= novaQuantidade) {
+
+				prod.setQuantidade(novaQuantidade);
+				produtoEstoque.setQuantidade(quantidadeRealProduto - novaQuantidade);
+
+				ProdutoService.atualizaProduto(produtoEstoque);
+
+			} else if (quantidadeRealProduto <= 0) {
+				JOptionPane.showMessageDialog(null, "Produto indisponivel. Tente outro!");
+			}
+
+			else {
+
+				Object[] opcoes = { "Sim", "Nao" };
+
+				int opcao = JOptionPane.showOptionDialog(null, "Deseja adicionar todos os itens restantes ?",
+						"Quantidade desejada menor do que em estoque.", JOptionPane.DEFAULT_OPTION,
+						JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
+
+				if (opcao == 0) {
+
+					prod.setQuantidade(quantidadeRealProduto);
+					produtoEstoque.setQuantidade(0);
+
+					ProdutoService.atualizaProduto(produtoEstoque);
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Compra de produto cancelada.");
+				}
+			}
+
 		} else {
 
 			Produto produto = ProdutoService.retornaProdutoPorCodigo(codigoProduto);
@@ -112,10 +153,14 @@ public class CaixaController {
 				}
 
 				else {
-					int escolha = Integer.parseInt(JOptionPane.showInputDialog(
-							"Quantidade desejada menor do que em estoque. Deseja adicionar todos os itens restantes ?\n1. Sim\n2. Não"));
 
-					if (escolha == 1) {
+					Object[] opcoes = { "Sim", "Nao" };
+
+					int opcao = JOptionPane.showOptionDialog(null, "Deseja adicionar todos os itens restantes ?",
+							"Quantidade desejada menor do que em estoque.", JOptionPane.DEFAULT_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
+
+					if (opcao == 0) {
 
 						ItemVenda item = new ItemVenda(produto, produto.getQuantidade());
 
@@ -149,14 +194,19 @@ public class CaixaController {
 
 	private void listarEstoque() {
 
-		Integer categoria_id = Integer.parseInt(JOptionPane.showInputDialog("Digite a categoria: "));
+		if (ProdutoService.tabelaProdutoEstaVazia()) {
+			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
+		} else {
 
-		String resultado = ProdutoService.imprimeProdutos(categoria_id);
+			int categoria = CategoriaService.retornaIdCategoria();
 
-		JOptionPane.showMessageDialog(null, resultado);
+			String resultado = ProdutoService.imprimeProdutos(categoria);
+
+			JOptionPane.showMessageDialog(null, resultado);
+		}
 
 	}
-
+// olhar se n da pra simplificar
 	private void removerProduto(Set<ItemVenda> listaCompras) {
 
 		if (listaCompras.isEmpty()) {
@@ -187,13 +237,14 @@ public class CaixaController {
 		}
 	}
 
+	// melhorar a qualidade // da pra simplificar
 	private void modificarQuantidade(Set<ItemVenda> listaCompras) {
 		if (listaCompras.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Carrinho de compras vazio.");
 		} else {
 			String codigo = JOptionPane.showInputDialog("Digite o codigo do produto: ");
 
-			if (ItemVendaService.jaContem(listaCompras, codigo)) {
+			if (ItemVendaService.contemProduto(listaCompras, codigo)) {
 				Integer novaQuantidade = Integer
 						.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade do produto: "));
 
@@ -215,10 +266,14 @@ public class CaixaController {
 				}
 
 				else {
-					int escolha = Integer.parseInt(JOptionPane.showInputDialog(
-							"Quantidade desejada menor do que em estoque. Deseja adicionar todos os itens restantes ?\n1. Sim\n2. Não"));
-					// USAR JOPIONPANE MELHOR AQUI
-					if (escolha == 1) {
+
+					Object[] opcoes = { "Sim", "Nao" };
+
+					int opcao = JOptionPane.showOptionDialog(null, "Deseja adicionar todos os itens restantes ?",
+							"Quantidade desejada menor do que em estoque.", JOptionPane.DEFAULT_OPTION,
+							JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
+
+					if (opcao == 0) {
 
 						prod.setQuantidade(quantidadeRealProduto);
 						produtoEstoque.setQuantidade(0);
@@ -232,22 +287,30 @@ public class CaixaController {
 
 				JOptionPane.showMessageDialog(null, "Quantidade modificada com sucesso!");
 			} else {
-				JOptionPane.showMessageDialog(null, "Produto inválido, tente outro!");
+				JOptionPane.showMessageDialog(null, "Produto invalido, tente outro!");
 			}
 		}
 	}
-
+// organizar mais
 	private void finalizarCompra(Set<ItemVenda> listaCompras, Boolean statusNotaFiscal, String caminhoNotaFiscal) {
 		if (!listaCompras.isEmpty()) {
 
-			Venda venda = new Venda(Instant.now());
+			Venda venda = new Venda();
+			venda.setInstant(Instant.now());
 
 			VendaService.adicionaVenda(venda);
 
+			Double total = 0.0;
+
 			for (ItemVenda itemVenda : listaCompras) {
 				itemVenda.setVenda(venda);
+				total += itemVenda.subTotal();
 				ItemVendaService.adicionaItemVenda(itemVenda);
 			}
+
+			venda.setTotal(total);
+
+			VendaService.atualizaVenda(venda);
 
 			if (statusNotaFiscal) {
 				VendaService.geradorNotaFiscal(venda, caminhoNotaFiscal);
@@ -257,7 +320,7 @@ public class CaixaController {
 			JOptionPane.showMessageDialog(null, "Obrigado, volte sempre!");
 		}
 	}
-
+// observar essa questao da quantidade real
 	private void limparCarrinho(Set<ItemVenda> listaCompras) {
 		if (!listaCompras.isEmpty()) {
 			for (ItemVenda item : listaCompras) {
@@ -276,7 +339,7 @@ public class CaixaController {
 
 		}
 	}
-
+// ve se isso esta em boas praticas
 	private int sair(int opcaoMenuFluxoDeCaixa) {
 		String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
 		boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);

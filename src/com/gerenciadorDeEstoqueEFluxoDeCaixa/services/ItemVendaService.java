@@ -1,5 +1,6 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,11 +35,6 @@ public class ItemVendaService {
 		listaCompras.removeIf(p -> p.getProduto().getcodigoDeBarra().equals(codigo));
 	}
 
-	public static boolean jaContem(Set<ItemVenda> listaCompras, String codigo) {
-		boolean JaExiste = listaCompras.stream().anyMatch(p -> p.getProduto().getcodigoDeBarra().equals(codigo));
-		return JaExiste;
-	}
-
 	public static ItemVenda retornaItemVendaPeloCodigo(Set<ItemVenda> listaCompras, String codigo) {
 		for (ItemVenda p : listaCompras) {
 			if (p.getProduto().getcodigoDeBarra().equals(codigo)) {
@@ -47,7 +43,7 @@ public class ItemVendaService {
 		}
 		return null;
 	}
-
+// nao imprime, retorna// observar se nao da pra simplificar
 	public static String imprime(Set<ItemVenda> listaCompras) {
 
 		StringBuilder sb = new StringBuilder();
@@ -78,7 +74,7 @@ public class ItemVendaService {
 
 	}
 
-	public static List<ItemVenda> retornaItensVenda(Venda venda) {
+	public static Set<ItemVenda> retornaItensVenda(Venda venda) {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -89,7 +85,8 @@ public class ItemVendaService {
 					.createQuery("SELECT p FROM ItemVenda p WHERE p.id.venda = :venda", ItemVenda.class)
 					.setParameter("venda", venda).getResultList();
 
-			return itens;
+			Set<ItemVenda> itensVenda = new HashSet<>(itens);
+			return itensVenda;
 
 		} catch (Exception e) {
 			System.out.println("Erro: " + e);

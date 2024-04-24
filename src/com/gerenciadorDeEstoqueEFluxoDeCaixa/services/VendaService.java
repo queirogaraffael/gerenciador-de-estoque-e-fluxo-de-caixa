@@ -1,17 +1,13 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
 
@@ -65,8 +61,7 @@ public class VendaService {
 		}
 	}
 
-	// ela n imprime, ela retorna. observar se o nome condiz
-	public static String imprimeVendas() {
+	public static String geraRelatioVendas() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -77,8 +72,8 @@ public class VendaService {
 
 			StringBuilder sb = new StringBuilder();
 
-			for (Venda elemento : vendas) {
-				sb.append(elemento + "\n");
+			for (Venda venda : vendas) {
+				sb.append(venda + "\n");
 			}
 			return sb.toString();
 
@@ -91,63 +86,58 @@ public class VendaService {
 
 	}
 
-	// ver se esse e o melhor metodo a se fazer (pegar todas as vendas para verificar se a tabela esta vazia)
 	public static boolean tabelaVendaEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
 		try {
-			List<Venda> vendas = entityManager.createQuery("FROM Venda", Venda.class).getResultList();
-			return vendas.isEmpty();
+
+			Long quantidade = entityManager.createQuery("SELECT COUNT(*) FROM Venda", Long.class).getSingleResult();
+			if (quantidade == 0) {
+				return true;
+			} else {
+				return false;
+			}
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
+			return false;
 		} finally {
 			entityManager.close();
 		}
-		return false;
 
 	}
-//melhora esse daqui pois vc pode pegar essas partes de outras funcoes
-	public static void geradorNotaFiscal(Venda venda, String caminho) {
-		String codigo = String.valueOf(venda.getCodigo()) + ".txt";
 
-		StringBuilder sb = new StringBuilder();
+	public static String geraRelatiorioVendasPorData(LocalDate data) {
 
-		sb.append("Codigo venda: ").append(venda.getCodigo()).append(" , Data: ").append(venda.getInstant())
-				.append("\n");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
 
-		Set<ItemVenda> itensVenda = ItemVendaService.retornaItensVenda(venda);
+		try {
 
-		for (ItemVenda p : itensVenda) {
-			sb.append("Codigo: " + p.getProduto().getcodigoDeBarra() + ", nome = " + p.getProduto().getNome()
-					+ ", Quantidade: " + String.format("%d, ", p.getQuantidade()) + "Total: "
-					+ String.format("%.2f", p.subTotal()) + "\n");
+			List<Venda> vendas = entityManager
+					.createQuery("SELECT p FROM Venda p WHERE CAST(p.dataHora AS date) = :data", Venda.class)
+					.setParameter("data", Date.valueOf(data)).getResultList();
 
-		}
+			Double total = 0.0;
 
-		double total = 0;
-		for (ItemVenda p : itensVenda) {
-			total += p.subTotal();
-		}
+			StringBuilder sb = new StringBuilder();
+			for (Venda venda : vendas) {
+				sb.append(venda + "\n");
+				total += venda.getTotal();
+			}
 
-		sb.append("Total: ").append(total);
+			sb.append("Total: ").append(total);
+			return sb.toString();
 
-		File diretorio = new File(caminho);
-
-		if (!diretorio.exists()) {
-			diretorio.mkdirs();
-		}
-
-		File arquivo = new File(diretorio, codigo);
-
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(arquivo))) {
-			bw.write(sb.toString());
-
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Diretorio não encontrado: " + caminho);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro em buscar vendas por data: " + e);
+			return "";
+		} finally {
+			entityManager.close();
 		}
 
 	}
+
 }

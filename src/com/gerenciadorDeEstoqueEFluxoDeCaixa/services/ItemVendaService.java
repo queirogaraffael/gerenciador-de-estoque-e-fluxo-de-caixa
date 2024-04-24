@@ -43,15 +43,15 @@ public class ItemVendaService {
 		}
 		return null;
 	}
-// nao imprime, retorna// observar se nao da pra simplificar
-	public static String imprime(Set<ItemVenda> listaCompras) {
+
+	public static String geraRelatorioItemVenda(Set<ItemVenda> itens) {
 
 		StringBuilder sb = new StringBuilder();
-
-		for (ItemVenda p : listaCompras) {
-			sb.append("Codigo: " + p.getProduto().getcodigoDeBarra() + ", nome = " + p.getProduto().getNome()
-					+ ", Quantidade: " + String.format("%d, ", p.getQuantidade()) + "Total: "
-					+ String.format("%.2f", p.subTotal()) + "\n");
+		for (ItemVenda p : itens) {
+			sb.append("Codigo: ").append(p.getProduto().getcodigoDeBarra()).append(", nome = ")
+					.append(p.getProduto().getNome()).append(", Preco: ").append(p.getProduto().getpreco())
+					.append(" R$").append(", Quantidade: ").append(p.getQuantidade()).append(", Total: ")
+					.append(p.subTotal()).append("\n");
 
 		}
 

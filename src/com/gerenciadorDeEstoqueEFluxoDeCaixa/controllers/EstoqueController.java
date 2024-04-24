@@ -1,5 +1,6 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.swing.JOptionPane;
@@ -12,12 +13,14 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConfiguracaoNotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ManipulacaoData;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
 
-	public void gerenciadorEstoque(String caminhoNotaFiscal) {
+	public void gerenciadorEstoque() {
 
 		int opcao = 0;
 
@@ -43,6 +46,10 @@ public class EstoqueController {
 					listarProdutos();
 					break;
 
+				case (ConstantesMenuEstoque.LISTAGEM_ESTOQUE_BAIXO):
+					listaProdutosEstoqueBaixo();
+					break;
+
 				case (ConstantesMenuEstoque.REMOVER):
 
 					removerProduto();
@@ -50,7 +57,7 @@ public class EstoqueController {
 
 				case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
 
-					ativadorNotaFiscal(caminhoNotaFiscal);
+					ativadorNotaFiscal();
 					break;
 
 				case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
@@ -144,8 +151,20 @@ public class EstoqueController {
 
 			int categoria = CategoriaService.retornaIdCategoria();
 
-			String resultado = ProdutoService.imprimeProdutos(categoria);
+			String resultado = ProdutoService.geraRelatotioProdutos(categoria);
 
+			JOptionPane.showMessageDialog(null, resultado);
+		}
+
+	}
+
+	private void listaProdutosEstoqueBaixo() {
+
+		String resultado = ProdutoService.geraRelatorioProdutosEstoqueBaixo();
+
+		if (resultado.equals("")) {
+			JOptionPane.showMessageDialog(null, "Sem produtos com baixo estoque!");
+		} else {
 			JOptionPane.showMessageDialog(null, resultado);
 		}
 
@@ -159,10 +178,10 @@ public class EstoqueController {
 		ProdutoService.removeProduto(codigoProdutoParaRemover);
 	}
 
-	private void ativadorNotaFiscal(String caminhoNotaFiscal) {
+	private void ativadorNotaFiscal() {
 		Object[] opcoes = { "Sim", "Nao" };
 
-		String mensagem = MenuPrincipalController.statusNotaFiscal ? "Deseja modificar o diretório?"
+		String mensagem = ConfiguracaoNotaFiscal.getStatusNotaFiscal() ? "Deseja modificar o diretório?"
 				: "Ativar gerador de nota fiscal ?";
 
 		int opcao = JOptionPane.showOptionDialog(null, mensagem, "Opcoes", JOptionPane.DEFAULT_OPTION,
@@ -173,16 +192,16 @@ public class EstoqueController {
 
 			if (VerificaDiretorio.verificarDiretorio(path)) {
 
-				MenuPrincipalController.caminhoNotaFiscal = path;
-				MenuPrincipalController.statusNotaFiscal = true;
+				ConfiguracaoNotaFiscal.setCaminhoNotaFiscal(path);
+				ConfiguracaoNotaFiscal.setStatusNotaFiscal(true);
 
-				String msg = MenuPrincipalController.statusNotaFiscal
+				String msg = ConfiguracaoNotaFiscal.getStatusNotaFiscal()
 						? "Gerador de notas fiscais com novo diretório ativado com sucesso!"
 						: "Gerador de notas fiscais ativado com sucesso!";
 				JOptionPane.showMessageDialog(null, msg);
 			} else {
 
-				String msg = MenuPrincipalController.statusNotaFiscal
+				String msg = ConfiguracaoNotaFiscal.getStatusNotaFiscal()
 						? "Falha ao tentar ativar o novo diretorio do gerador de notas fiscais."
 						: "Falha ao tentar ativar gerador de notas fiscais.";
 				JOptionPane.showMessageDialog(null, msg);
@@ -192,20 +211,54 @@ public class EstoqueController {
 		}
 
 	}
-// adicionar pra ver apenas por data
+
 	private void listarVendas() {
 
 		if (!VendaService.tabelaVendaEstaVazia()) {
 
-			String resultadoListagemVendas = VendaService.imprimeVendas();
-			JOptionPane.showMessageDialog(null, resultadoListagemVendas);
+			Object[] opcoes = { "Listar todas as vendas", "Listar venda por data especifica", "Voltar" };
 
-		} else {
-			JOptionPane.showMessageDialog(null, "Sem venda registrada.");
+			int opcaoListagem = JOptionPane.showOptionDialog(null, "Escolha uma opcao: ", "Listagem de vendas",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
+
+			if (opcaoListagem == 0) {
+
+				String resultadoListagemVendas = VendaService.geraRelatioVendas();
+				JOptionPane.showMessageDialog(null, resultadoListagemVendas);
+
+			} else if (opcaoListagem == 1) {
+				String formatoData = "dd/MM/yyyy";
+				String dataString = JOptionPane.showInputDialog("Digite uma data no formato dd/MM/yyyy");
+
+				boolean formatoAprovado = ManipulacaoData.verificaFormatoData(dataString, formatoData);
+
+				if (formatoAprovado) {
+
+					LocalDate data = ManipulacaoData.retornaLocalDate(dataString);
+					if (!ManipulacaoData.verificaSeADataEPosterior(dataString)) {
+
+						String resultadoListagemVendasPorData = VendaService.geraRelatiorioVendasPorData(data);
+
+						if (resultadoListagemVendasPorData.equals("")) {
+							JOptionPane.showMessageDialog(null, "Sem resultado de vendas para esta data");
+						} else {
+							JOptionPane.showMessageDialog(null, resultadoListagemVendasPorData);
+						}
+
+					} else {
+						JOptionPane.showMessageDialog(null, "Data posterior a data atual. Tente novamente!");
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Problema no formato da data. Tente novamente!");
+				}
+
+			} else {
+				JOptionPane.showMessageDialog(null, "Sem venda registrada.");
+			}
 		}
 	}
 
-	// melhorar aqui
 	private void detalharVenda() {
 		if (!VendaService.tabelaVendaEstaVazia()) {
 
@@ -216,9 +269,10 @@ public class EstoqueController {
 
 				Set<ItemVenda> itens = ItemVendaService.retornaItensVenda(venda);
 
-				String itensVenda = ItemVendaService.imprime(itens);
+				String itensVenda = ItemVendaService.geraRelatorioItemVenda(itens);
 
-				String resultado = itensVenda + "\n" + venda.toString();
+				String resultado = venda.toStringSemPreco() + "\n" + itensVenda
+						+ String.format("Total: %.2f", venda.getTotal());
 
 				JOptionPane.showMessageDialog(null, resultado);
 

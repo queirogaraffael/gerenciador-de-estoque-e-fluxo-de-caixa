@@ -1,6 +1,6 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,11 +15,13 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConfiguracaoNotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.GeradorNotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
 
 public class CaixaController {
 
-	public void fluxoDeCaixa(Boolean statusNotaFiscal, String caminhoNotaFiscal) {
+	public void fluxoDeCaixa() {
 		int opcaoMenuFluxoDeCaixa = 0;
 
 		Set<ItemVenda> listaCompras = new HashSet<>();
@@ -59,7 +61,7 @@ public class CaixaController {
 
 				case (ConstantesMenuFluxoCaixa.FINALIZAR_COMPRA):
 
-					finalizarCompra(listaCompras, statusNotaFiscal, caminhoNotaFiscal);
+					finalizarCompra(listaCompras);
 					break;
 
 				case (ConstantesMenuFluxoCaixa.LIMPAR):
@@ -84,7 +86,6 @@ public class CaixaController {
 		} while (opcaoMenuFluxoDeCaixa != ConstantesMenuFluxoCaixa.SAIR);
 	}
 
-	// melhorar a qualidade// ta muito grande
 	private void adicionaProduto(Set<ItemVenda> listaCompras) {
 		String codigoProduto = JOptionPane
 				.showInputDialog("Digite o codigo do produto que voce deseja adicionar a lista de compras");
@@ -182,11 +183,11 @@ public class CaixaController {
 
 	private void listarSacola(Set<ItemVenda> listaCompras) {
 
-		String lista = ItemVendaService.imprime(listaCompras);
+		String compras = ItemVendaService.geraRelatorioItemVenda(listaCompras);
 
 		double subtotal = ItemVendaService.somaPrecos(listaCompras);
 		String subtotalFormatado = String.format("Subtotal: %.2f R$", subtotal);
-		String resultado = "Produtos da sacola de compras: \n" + lista + "\n" + subtotalFormatado;
+		String resultado = "Produtos da sacola de compras: \n" + compras + "\n" + subtotalFormatado;
 
 		JOptionPane.showMessageDialog(null, resultado);
 
@@ -200,13 +201,13 @@ public class CaixaController {
 
 			int categoria = CategoriaService.retornaIdCategoria();
 
-			String resultado = ProdutoService.imprimeProdutos(categoria);
+			String resultado = ProdutoService.geraRelatotioProdutos(categoria);
 
 			JOptionPane.showMessageDialog(null, resultado);
 		}
 
 	}
-// olhar se n da pra simplificar
+
 	private void removerProduto(Set<ItemVenda> listaCompras) {
 
 		if (listaCompras.isEmpty()) {
@@ -221,16 +222,16 @@ public class CaixaController {
 
 			} else {
 
-				ItemVenda produtoListaCompras = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras,
+				ItemVenda ItemListaCompras = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras,
 						codigoProdutoParaRemover);
 
 				Produto produtoDoEstoque = ProdutoService.retornaProdutoPorCodigo(codigoProdutoParaRemover);
-				int quantidadeRealProduto = produtoListaCompras.getQuantidade() + produtoDoEstoque.getQuantidade();
+				int quantidadeRealProduto = ItemListaCompras.getQuantidade() + produtoDoEstoque.getQuantidade();
 
 				produtoDoEstoque.setQuantidade(quantidadeRealProduto);
 
 				ProdutoService.atualizaProduto(produtoDoEstoque);
-				listaCompras.remove(produtoListaCompras);
+				listaCompras.remove(ItemListaCompras);
 
 				JOptionPane.showMessageDialog(null, "Produto removida com sucesso!");
 			}
@@ -291,12 +292,12 @@ public class CaixaController {
 			}
 		}
 	}
-// organizar mais
-	private void finalizarCompra(Set<ItemVenda> listaCompras, Boolean statusNotaFiscal, String caminhoNotaFiscal) {
+
+	private void finalizarCompra(Set<ItemVenda> listaCompras) {
 		if (!listaCompras.isEmpty()) {
 
 			Venda venda = new Venda();
-			venda.setInstant(Instant.now());
+			venda.setDataHora(LocalDateTime.now());
 
 			VendaService.adicionaVenda(venda);
 
@@ -312,15 +313,16 @@ public class CaixaController {
 
 			VendaService.atualizaVenda(venda);
 
-			if (statusNotaFiscal) {
-				VendaService.geradorNotaFiscal(venda, caminhoNotaFiscal);
+			if (ConfiguracaoNotaFiscal.getStatusNotaFiscal()) {
+				GeradorNotaFiscal.geradorNotaFiscal(venda, listaCompras, ConfiguracaoNotaFiscal.getCaminhoNotaFiscal());
 			}
 
 			listaCompras.clear();
+
 			JOptionPane.showMessageDialog(null, "Obrigado, volte sempre!");
 		}
 	}
-// observar essa questao da quantidade real
+
 	private void limparCarrinho(Set<ItemVenda> listaCompras) {
 		if (!listaCompras.isEmpty()) {
 			for (ItemVenda item : listaCompras) {
@@ -339,7 +341,7 @@ public class CaixaController {
 
 		}
 	}
-// ve se isso esta em boas praticas
+
 	private int sair(int opcaoMenuFluxoDeCaixa) {
 		String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
 		boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);

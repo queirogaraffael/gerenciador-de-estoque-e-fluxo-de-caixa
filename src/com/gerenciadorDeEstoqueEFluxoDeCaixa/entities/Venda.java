@@ -1,9 +1,7 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
 
 import java.io.Serializable;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,12 +17,13 @@ import javax.persistence.Table;
 @Table(name = "vendas")
 public class Venda implements Serializable {
 
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigo;
-	private Instant instant;
+	private LocalDateTime dataHora;
 	private Double total;
 
 	@OneToMany(mappedBy = "id.venda")
@@ -37,14 +36,17 @@ public class Venda implements Serializable {
 		return codigo;
 	}
 
-	public void setInstant(Instant instant) {
-		this.instant = instant;
+	public LocalDateTime getDataHora() {
+		return dataHora;
 	}
 
-	public String getInstant() {
+	public String getDataHoraString() {
 		DateTimeFormatter formatoDataHora = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-		ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
-		return formatoDataHora.format(zonedDateTime);
+		return getDataHora().format(formatoDataHora);
+	}
+
+	public void setDataHora(LocalDateTime dataHora) {
+		this.dataHora = dataHora;
 	}
 
 	public Set<ItemVenda> getProdutosVendidos() {
@@ -61,8 +63,12 @@ public class Venda implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Venda: Codigo = " + codigo + ", Data = " + getInstant() + ", Total: "
+		return "Venda: Codigo = " + codigo + ", Data = " + getDataHoraString() + ", Total: "
 				+ String.format("%.2f R$", getTotal());
+	}
+
+	public String toStringSemPreco() {
+		return "Venda: Codigo = " + codigo + ", Data = " + getDataHoraString();
 	}
 
 }

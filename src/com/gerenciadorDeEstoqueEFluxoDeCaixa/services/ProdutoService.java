@@ -13,7 +13,6 @@ public class ProdutoService {
 
 	private static EntityManagerFactory entityManagerFactory = EntityManagerFactoryService.entityManagerFactory();
 
-	// Adicionar produtos
 	public static void adicionaProduto(Produto produto) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -47,7 +46,6 @@ public class ProdutoService {
 
 	}
 
-	// remove produto pelo codigo
 	public static void removeProduto(String codigo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -85,8 +83,7 @@ public class ProdutoService {
 		}
 	}
 
-// não imprime, retorna
-	public static String imprimeProdutos(Integer categoria) {
+	public static String geraRelatotioProdutos(Integer categoria) {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -112,7 +109,6 @@ public class ProdutoService {
 		return "";
 	}
 
-// faz sentido trazer todos os produtos paraverificar se esta vazia ?
 	public static boolean tabelaProdutoEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -120,15 +116,46 @@ public class ProdutoService {
 		entityManager.getTransaction().begin();
 
 		try {
-			List<Produto> produtos = entityManager.createQuery("FROM Produto", Produto.class).getResultList();
-			return produtos.isEmpty();
+			Long quantidade = entityManager.createQuery("SELECT COUNT(*) FROM Produto", Long.class).getSingleResult();
+
+			if (quantidade == 0) {
+				return true;
+			} else {
+				return false;
+			}
 
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Erro: " + e);
+			return false;
 		} finally {
 			entityManager.close();
 		}
-		return false;
+
+	}
+
+	public static String geraRelatorioProdutosEstoqueBaixo() {
+
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		try {
+
+			List<Produto> produtos = entityManager
+					.createQuery("SELECT p FROM Produto p WHERE p.quantidade <= 10", Produto.class).getResultList();
+
+			StringBuilder sb = new StringBuilder();
+
+			for (Produto produto : produtos) {
+				sb.append(produto + "\n");
+			}
+			return sb.toString();
+
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro ao gerar relatorio de produtos com baixo estoque: " + e);
+			return "";
+		} finally {
+			entityManager.close();
+		}
 
 	}
 

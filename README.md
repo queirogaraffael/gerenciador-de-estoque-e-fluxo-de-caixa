@@ -1,0 +1,51 @@
+# Gerenciador de Estoque e Fluxo de Caixa
+
+Este é um projeto de um sistema de gerenciamento de estoque e fluxo de caixa desenvolvido em Java, com foco principalmente no backend. O sistema permite o cadastro, edição, remoção e listagem de produtos no estoque, além de fornecer funcionalidades de controle de vendas e fluxo de caixa.
+Funcionalidades:
+
+### Gerenciador de Estoque:
+* Cadastro, edição, remoção e listagem de produtos.
+* Visualização de produtos com estoque baixo.
+* Ativação do gerador de nota fiscal.
+* Listagem de todas as vendas realizadas.
+* Listagem de vendas por data específica.
+* Detalhamento de uma venda específica.
+
+### Fluxo de Caixa:
+* Adição e remoção de produtos em uma sacola de compras.
+* Modificação de quantidades na sacola de compras.
+* Listagem dos produtos no carrinho de compras.
+* Limpeza do carrinho de compras.
+* Finalização da compra e geração de nota fiscal.
+
+## Tecnologias Utilizadas
+* Java: Linguagem de programação utilizada para o desenvolvimento do sistema.
+* Hibernate: Framework utilizado como implementação do JPA (Java Persistence API) para a persistência de dados em um banco de dados relacional (MySQL).
+* Swing: Biblioteca gráfica utilizada para a interface do usuário.
+
+## Estrutura do Projeto
+
+### O projeto segue a estrutura padrão MVC (Model-View-Controller), onde:
+
+* Model: Representado pelas classes Produto, Venda, ItemVenda e Categoria, responsáveis pela representação dos dados e regras de negócio.
+* View: Representada pelas interfaces gráficas do sistema, como os menus de interação com o usuário.
+* Controller: Representado pelas classes MenuPrincipalController, EstoqueController e CaixaController, responsáveis por intermediar as interações entre a View e o Model, executando as operações necessárias.
+
+## Pré-Requisitos
+* Java Development Kit (JDK) instalado na máquina.
+* Banco de dados MySQL configurado e acessível.
+* IDE compatível com projetos Java para compilação e execução do código.
+* Executar as queries localizadas na pasta database para adicionar as tabelas categorias e produtos ao banco de dados. É obrigatório adicionar a tabela categorias antes para o bom funcionamento do programa.
+
+## Como Executar
+* Clone o repositório para sua máquina local.
+* Abra o projeto em sua IDE Java.
+* Certifique-se de ter configurado corretamente o banco de dados MySQL e as credenciais de acesso.
+* Compile e execute o projeto a partir da classe Main.
+
+## Acesso a Partes Sensíveis
+* Para acessar partes sensíveis do programa, como o gerenciador de estoque, é necessário utilizar a senha senha123.
+
+## Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para propor melhorias e reportar problemas do projeto.

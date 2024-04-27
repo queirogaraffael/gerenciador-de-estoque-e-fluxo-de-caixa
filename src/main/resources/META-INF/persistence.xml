@@ -7,7 +7,7 @@
 	<persistence-unit name="persistencia" transaction-type="RESOURCE_LOCAL">
 		<properties>
 			<property name="javax.persistence.jdbc.url"
-				value="jdbc:mysql://localhost:3306/stockcash?useSSL=FALSE&amp;serverTimezone=UTC" />
+				value="jdbc:mysql://localhost:3306/estoque_fluxo_caixa_db?useSSL=FALSE&amp;serverTimezone=UTC" />
 			
 			<property name="javax.persistence.jdbc.driver"
 				value="com.mysql.jdbc.Driver" />

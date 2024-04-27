@@ -35,12 +35,12 @@ Funcionalidades:
 * Java Development Kit (JDK) instalado na máquina.
 * Banco de dados MySQL configurado e acessível.
 * IDE compatível com projetos Java para compilação e execução do código.
-* Executar as queries localizadas na pasta database para adicionar as tabelas categorias e produtos ao banco de dados. É obrigatório adicionar a tabela categorias antes para o bom funcionamento do programa.
+* A execução da query localizada na pasta database para adicionar a tabela produtos ao banco de dados é opcional.
 
 ## Como Executar
 * Clone o repositório para sua máquina local.
 * Abra o projeto em sua IDE Java.
-* Certifique-se de ter configurado corretamente o banco de dados MySQL e as credenciais de acesso.
+* Certifique-se de ter configurado corretamente o banco de dados MySQL e as credenciais de acesso no arquivo persistence.xml.
 * Compile e execute o projeto a partir da classe Main.
 
 ## Acesso a Partes Sensíveis

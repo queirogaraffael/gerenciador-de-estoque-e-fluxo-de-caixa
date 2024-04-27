@@ -1,4 +1,4 @@
-USE stockcash;
+USE estoque_fluxo_caixa_db;
 
 CREATE TABLE produtos (
     codigoDeBarra VARCHAR(13) PRIMARY KEY NOT NULL,

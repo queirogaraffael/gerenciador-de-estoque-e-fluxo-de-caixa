@@ -22,8 +22,8 @@ public class VendaService {
 			entityManager.persist(venda);
 			entityManager.getTransaction().commit();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas em adicionar a venda" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas em adicionar a venda" + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -52,8 +52,8 @@ public class VendaService {
 		try {
 			return entityManager.find(Venda.class, codigo);
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas ao buscar por venda" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas ao buscar por venda" + erro);
 			return null;
 
 		} finally {
@@ -77,8 +77,8 @@ public class VendaService {
 			}
 			return sb.toString();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao tentar gerar relatorio de vendas: " + erro);
 			return "";
 		} finally {
 			entityManager.close();
@@ -100,8 +100,8 @@ public class VendaService {
 				return false;
 			}
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao tentar verificar se tabela de vendas esta vazia: " + erro);
 			return false;
 		} finally {
 			entityManager.close();
@@ -131,8 +131,8 @@ public class VendaService {
 			sb.append("Total: ").append(total);
 			return sb.toString();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro em buscar vendas por data: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro em buscar vendas por data: " + erro);
 			return "";
 		} finally {
 			entityManager.close();

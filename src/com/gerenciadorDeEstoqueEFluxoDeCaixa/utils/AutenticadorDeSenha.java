@@ -10,7 +10,7 @@ public class AutenticadorDeSenha {
 			} else {
 				return false;
 			}
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException erro) {
 			return false;
 		}
 

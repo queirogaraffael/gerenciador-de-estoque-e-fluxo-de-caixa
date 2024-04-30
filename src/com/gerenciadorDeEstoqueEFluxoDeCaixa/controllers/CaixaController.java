@@ -70,11 +70,9 @@ public class CaixaController {
 					break;
 
 				case (ConstantesMenuFluxoCaixa.SAIR):
-					opcaoMenuFluxoDeCaixa = sair(opcaoMenuFluxoDeCaixa);
 
-					break;
-				default:
-					JOptionPane.showMessageDialog(null, "Opcao invalida. Tente novamente!");
+					opcaoMenuFluxoDeCaixa = sair();
+
 					break;
 
 				}
@@ -238,7 +236,6 @@ public class CaixaController {
 		}
 	}
 
-	// melhorar a qualidade // da pra simplificar
 	private void modificarQuantidade(Set<ItemVenda> listaCompras) {
 		if (listaCompras.isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Carrinho de compras vazio.");
@@ -342,14 +339,17 @@ public class CaixaController {
 		}
 	}
 
-	private int sair(int opcaoMenuFluxoDeCaixa) {
+	private int sair() {
+
 		String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
 		boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
 		if (!autenticacao) {
 			JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
-			return 0;
+			return ConstantesMenuFluxoCaixa.CONTINUAR_NO_PROGRAMA;
 		}
-		return 8;
+		return ConstantesMenuFluxoCaixa.SAIR;
+
 	}
+
 }

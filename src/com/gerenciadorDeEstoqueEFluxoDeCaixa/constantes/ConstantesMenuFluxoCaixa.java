@@ -2,6 +2,7 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes;
 
 public class ConstantesMenuFluxoCaixa {
 
+	public static final int CONTINUAR_NO_PROGRAMA = 0;
 	public static final int ADICIONAR = 1;
 	public static final int LISTAR_SACOLA = 2;
 	public static final int LISTAR_ESTOQUE = 3;

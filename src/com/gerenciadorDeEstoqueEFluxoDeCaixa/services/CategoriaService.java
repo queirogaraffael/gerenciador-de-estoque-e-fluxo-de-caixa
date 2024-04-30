@@ -28,8 +28,8 @@ public class CategoriaService {
 
 			return ArrayCategorias;
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro em recuperar categorias: " + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -59,36 +59,21 @@ public class CategoriaService {
 
 			if (categorias.isEmpty()) {
 
-				Categoria categoria1 = new Categoria(1, "Alimentos e Bebidas");
-				Categoria categoria2 = new Categoria(2, "Produtos de Limpeza");
-				Categoria categoria3 = new Categoria(3, "Higiene Pessoal");
-				Categoria categoria4 = new Categoria(4, "Eletrônicos");
-				Categoria categoria5 = new Categoria(5, "Roupas e Acessórios");
-				Categoria categoria6 = new Categoria(6, "Móveis e Decoração");
-				Categoria categoria7 = new Categoria(7, "Ferramentas e Equipamentos");
-				Categoria categoria8 = new Categoria(8, "Livros e Materiais de Escritório");
-				Categoria categoria9 = new Categoria(9, "Saúde e Bem-Estar");
-				Categoria categoria10 = new Categoria(10, "Automotivo");
-				Categoria categoria11 = new Categoria(11, "Outra");
+				String[] nomesCategorias = { "Alimentos e Bebidas", "Produtos de Limpeza", "Higiene Pessoal",
+						"Eletrônicos", "Roupas e Acessórios", "Móveis e Decoração", "Ferramentas e Equipamentos",
+						"Livros e Materiais de Escritório", "Saúde e Bem-Estar", "Automotivo", "Outra" };
 
-				entityManager.persist(categoria1);
-				entityManager.persist(categoria2);
-				entityManager.persist(categoria3);
-				entityManager.persist(categoria4);
-				entityManager.persist(categoria5);
-				entityManager.persist(categoria6);
-				entityManager.persist(categoria7);
-				entityManager.persist(categoria8);
-				entityManager.persist(categoria9);
-				entityManager.persist(categoria10);
-				entityManager.persist(categoria11);
-
+				for (int i = 1; i <= nomesCategorias.length; i++) {
+					Categoria categoria = new Categoria(i, nomesCategorias[i - 1]);
+					entityManager.persist(categoria);
+				}
 				entityManager.getTransaction().commit();
 
 			}
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			entityManager.getTransaction().rollback();
+			JOptionPane.showMessageDialog(null, "Erro ao adicionar categorias" + erro);
 		} finally {
 			entityManager.close();
 		}

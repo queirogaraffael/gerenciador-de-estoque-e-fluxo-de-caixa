@@ -9,12 +9,13 @@ public class GerenciadorDeEstoqueView {
 		menu.append("1. Cadastrar produto(s)\n");
 		menu.append("2. Editar produto\n");
 		menu.append("3. Listagem do estoque\n");
-		menu.append("4. Produtos com estoque baixo\n");
-		menu.append("5. Remoção de produto\n");
-		menu.append("6. Gerador de notas fiscal\n");
-		menu.append("7. Listagem de Vendas\n");
-		menu.append("8. Detalhes da Venda\n");
-		menu.append("9. Voltar\n");
+		menu.append("4. Listar produtos com estoque baixo\n");
+		menu.append("5. Listar Categorias\n");
+		menu.append("6. Remoção de produto\n");
+		menu.append("7. Gerador de notas fiscal\n");
+		menu.append("8. Listagem de Vendas\n");
+		menu.append("9. Detalhes da Venda\n");
+		menu.append("10. Voltar\n");
 		menu.append("\nEscolha uma opção: ");
 		return menu.toString();
 	}

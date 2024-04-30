@@ -21,8 +21,8 @@ public class ProdutoService {
 			entityManager.persist(produto);
 			entityManager.getTransaction().commit();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas em adicionar o produto" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas em adicionar o produto" + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -36,10 +36,9 @@ public class ProdutoService {
 		try {
 			entityManager.merge(produto);
 			entityManager.getTransaction().commit();
-		} catch (Exception e) {
+		} catch (Exception erro) {
 			entityManager.getTransaction().rollback();
-
-			JOptionPane.showMessageDialog(null, "Problema na atuzalizaca do produto." + e.getMessage());
+			JOptionPane.showMessageDialog(null, "Problema na atualizacao do produto." + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -60,8 +59,8 @@ public class ProdutoService {
 				JOptionPane.showMessageDialog(null, "Produto nao existe");
 			}
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas ao remover produto" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas ao remover produto" + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -74,8 +73,8 @@ public class ProdutoService {
 		try {
 			return entityManager.find(Produto.class, codigo);
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas ao buscar por produto" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas ao buscar por produto" + erro);
 			return null;
 
 		} finally {
@@ -101,8 +100,8 @@ public class ProdutoService {
 			}
 			return sb.toString();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao tentar gerar relatorio dos produtos: " + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -124,8 +123,8 @@ public class ProdutoService {
 				return false;
 			}
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao tentar verificar se tabela de produtos esta vazia: " + erro);
 			return false;
 		} finally {
 			entityManager.close();
@@ -150,8 +149,8 @@ public class ProdutoService {
 			}
 			return sb.toString();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro ao gerar relatorio de produtos com baixo estoque: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao gerar relatorio de produtos com baixo estoque: " + erro);
 			return "";
 		} finally {
 			entityManager.close();

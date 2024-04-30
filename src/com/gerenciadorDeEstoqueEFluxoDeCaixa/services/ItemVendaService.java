@@ -66,8 +66,8 @@ public class ItemVendaService {
 			entityManager.persist(itemVenda);
 			entityManager.getTransaction().commit();
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Problemas em adicionar item" + e.getMessage());
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Problemas em adicionar item." + erro);
 		} finally {
 			entityManager.close();
 		}
@@ -88,9 +88,8 @@ public class ItemVendaService {
 			Set<ItemVenda> itensVenda = new HashSet<>(itens);
 			return itensVenda;
 
-		} catch (Exception e) {
-			System.out.println("Erro: " + e);
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+		} catch (Exception erro) {
+			JOptionPane.showMessageDialog(null, "Erro ao retornar itens venda." + erro);
 			return null;
 		} finally {
 			entityManager.close();

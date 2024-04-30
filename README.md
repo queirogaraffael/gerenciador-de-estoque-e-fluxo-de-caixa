@@ -35,7 +35,7 @@ Funcionalidades:
 * Java Development Kit (JDK) instalado na máquina.
 * Banco de dados MySQL configurado e acessível.
 * IDE compatível com projetos Java para compilação e execução do código.
-* A execução da query localizada na pasta database para adicionar a tabela produtos ao banco de dados é opcional.
+* A execução da query localizada na pasta database para adicionar a tabela produtos ao banco de dados é opcional. Mas caso queira adicionar, primeiro execute o programa para poder adicionar as categorias antes dos produtos.
 
 ## Como Executar
 * Clone o repositório para sua máquina local.

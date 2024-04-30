@@ -50,6 +50,10 @@ public class EstoqueController {
 					listaProdutosEstoqueBaixo();
 					break;
 
+				case (ConstantesMenuEstoque.LISTAGEM_CATEGORIAS):
+					listarCategorias();
+					break;
+
 				case (ConstantesMenuEstoque.REMOVER):
 
 					removerProduto();
@@ -167,6 +171,14 @@ public class EstoqueController {
 		} else {
 			JOptionPane.showMessageDialog(null, resultado);
 		}
+
+	}
+
+	private void listarCategorias() {
+
+		Object resultado = CategoriaService.categorias();
+
+		JOptionPane.showMessageDialog(null, resultado);
 
 	}
 

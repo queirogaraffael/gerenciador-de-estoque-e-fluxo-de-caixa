@@ -22,14 +22,13 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
 public class CaixaController {
 
 	public void fluxoDeCaixa() {
-		int opcaoMenuFluxoDeCaixa = 0;
+		String opcaoMenuFluxoDeCaixa = "";
 
 		Set<ItemVenda> listaCompras = new HashSet<>();
 
 		do {
 			try {
-				opcaoMenuFluxoDeCaixa = Integer
-						.parseInt(JOptionPane.showInputDialog(FluxoDeCaixaView.exibirMenuFluxoDeCaixa()));
+				opcaoMenuFluxoDeCaixa = FluxoDeCaixaView.exibirMenuFluxoDeCaixa();
 
 				switch (opcaoMenuFluxoDeCaixa) {
 
@@ -81,7 +80,7 @@ public class CaixaController {
 						"Entrada invalida. Por favor, insira um numero correspondente a� opção desejada.");
 			}
 
-		} while (opcaoMenuFluxoDeCaixa != ConstantesMenuFluxoCaixa.SAIR);
+		} while (!opcaoMenuFluxoDeCaixa.equals(ConstantesMenuFluxoCaixa.SAIR));
 	}
 
 	private void adicionaProduto(Set<ItemVenda> listaCompras) {
@@ -339,7 +338,7 @@ public class CaixaController {
 		}
 	}
 
-	private int sair() {
+	private String sair() {
 
 		String senhaDigitada = JOptionPane.showInputDialog(null, "Digite a senha: ");
 		boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);

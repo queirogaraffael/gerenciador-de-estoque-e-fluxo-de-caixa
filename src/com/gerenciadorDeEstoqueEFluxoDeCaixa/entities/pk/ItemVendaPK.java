@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 
-@Embeddable // faz parte de outra entidade, nesse caso de ItemVenda
+@Embeddable
 public class ItemVendaPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -2,14 +2,14 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes;
 
 public class ConstantesMenuFluxoCaixa {
 
-	public static final int CONTINUAR_NO_PROGRAMA = 0;
-	public static final int ADICIONAR = 1;
-	public static final int LISTAR_SACOLA = 2;
-	public static final int LISTAR_ESTOQUE = 3;
-	public static final int REMOVER_PRODUTO = 4;
-	public static final int MODIFICAR_QUANTIDADE = 5;
-	public static final int LIMPAR = 6;
-	public static final int FINALIZAR_COMPRA = 7;
-	public static final int SAIR = 8;
+	public static final String CONTINUAR_NO_PROGRAMA = "";
+	public static final String ADICIONAR = "Adicionar";
+	public static final String LISTAR_SACOLA = "Listar sacola de compras";
+	public static final String LISTAR_ESTOQUE = "Listar produtos em estoque";
+	public static final String REMOVER_PRODUTO = "Remover produto da sacola";
+	public static final String MODIFICAR_QUANTIDADE = "Modificar quantidade de um produto";
+	public static final String LIMPAR = "Limpar carrinho";
+	public static final String FINALIZAR_COMPRA = "Finalizar compra";
+	public static final String SAIR = "Sair";
 
 }

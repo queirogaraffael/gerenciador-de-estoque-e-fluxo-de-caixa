@@ -1,16 +1,16 @@
 package com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes;
 
 public class ConstantesMenuEstoque {
-	
-	public static final int CADASTRAR = 1;
-	public static final int EDITAR = 2;
-	public static final int LISTAGEM = 3;
-	public static final int LISTAGEM_ESTOQUE_BAIXO = 4;
-	public static final int LISTAGEM_CATEGORIAS = 5;
-	public static final int REMOVER = 6;
-	public static final int ATIVAR_NOTA_FICAL = 7;
-	public static final int LISTAGEM_VENDAS = 8;
-	public static final int DETALHES_VENDA = 9;
-	public static final int VOLTAR = 10;
-	
+
+	public static final String CADASTRAR = "Cadastrar produto(s)";
+	public static final String EDITAR = "Editar produto";
+	public static final String LISTAGEM = "Listagem do estoque";
+	public static final String LISTAGEM_ESTOQUE_BAIXO = "Listar produtos com estoque baixo";
+	public static final String LISTAGEM_CATEGORIAS = "Listar Categorias";
+	public static final String REMOVER = "Remoção de produto";
+	public static final String ATIVAR_NOTA_FICAL = "Gerador de notas fiscal";
+	public static final String LISTAGEM_VENDAS = "Listagem de Vendas";
+	public static final String DETALHES_VENDA = "Detalhes da Venda";
+	public static final String VOLTAR = "Voltar";
+
 }

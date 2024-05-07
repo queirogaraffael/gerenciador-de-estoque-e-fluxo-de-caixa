@@ -16,7 +16,7 @@ public class ItemVenda implements Serializable {
 
 	@EmbeddedId
 	private ItemVendaPK id = new ItemVendaPK();
-
+ 
 	private Integer quantidade;
 
 	public ItemVenda() {

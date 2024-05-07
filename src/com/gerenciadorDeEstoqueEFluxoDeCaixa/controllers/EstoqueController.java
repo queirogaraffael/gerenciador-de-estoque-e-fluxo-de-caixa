@@ -22,12 +22,11 @@ public class EstoqueController {
 
 	public void gerenciadorEstoque() {
 
-		int opcao = 0;
+		String opcao = "";
 
 		do {
 			try {
-				opcao = Integer.parseInt(
-						JOptionPane.showInputDialog(GerenciadorDeEstoqueView.exibirMenuGerenciadorDeEstoque()));
+				opcao = GerenciadorDeEstoqueView.exibirMenuGerenciadorDeEstoque();
 
 				switch (opcao) {
 
@@ -81,12 +80,12 @@ public class EstoqueController {
 					JOptionPane.showMessageDialog(null, "Opcao invalida. Tente outra!");
 					break;
 				}
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException erro) {
 				JOptionPane.showMessageDialog(null,
-						"Entrada invalida. Por favor, insira um numero correspondente a opção desejada.");
+						"Entrada invalida. Por favor, insira um numero correspondente a opçao desejada.");
 			}
 
-		} while (opcao != ConstantesMenuEstoque.VOLTAR);
+		} while (!opcao.equals(ConstantesMenuEstoque.VOLTAR));
 	}
 
 	private void cadastrarProduto() {

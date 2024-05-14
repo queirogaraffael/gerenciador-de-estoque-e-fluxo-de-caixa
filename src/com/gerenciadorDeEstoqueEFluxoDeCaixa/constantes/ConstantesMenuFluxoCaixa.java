@@ -10,6 +10,6 @@ public class ConstantesMenuFluxoCaixa {
 	public static final String MODIFICAR_QUANTIDADE = "Modificar quantidade de um produto";
 	public static final String LIMPAR = "Limpar carrinho";
 	public static final String FINALIZAR_COMPRA = "Finalizar compra";
-	public static final String SAIR = "Sair";
+	public static final String SAIR = "Voltar para Menu Principal";
 
 }

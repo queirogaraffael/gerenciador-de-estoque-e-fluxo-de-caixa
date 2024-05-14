@@ -1,7 +1,8 @@
 # Gerenciador de Estoque e Fluxo de Caixa
 
 Este é um projeto de um sistema de gerenciamento de estoque e fluxo de caixa desenvolvido em Java, com foco principalmente no backend. O sistema permite o cadastro, edição, remoção e listagem de produtos no estoque, além de fornecer funcionalidades de controle de vendas e fluxo de caixa.
-Funcionalidades:
+
+## Funcionalidades:
 
 ### Gerenciador de Estoque:
 * Cadastro, edição, remoção e listagem de produtos.
@@ -47,5 +48,7 @@ Funcionalidades:
 * Para acessar partes sensíveis do programa, como o gerenciador de estoque, é necessário utilizar a senha senha123.
 
 ## Contribuições
-
 Contribuições são bem-vindas! Sinta-se à vontade para propor melhorias e reportar problemas do projeto.
+
+## Licença
+Este projeto está licenciado sob a Licença MIT.

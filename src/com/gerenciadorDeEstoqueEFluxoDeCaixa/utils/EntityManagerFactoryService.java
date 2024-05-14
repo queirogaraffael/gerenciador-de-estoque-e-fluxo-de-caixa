@@ -21,8 +21,7 @@ public class EntityManagerFactoryService {
 		}
 	}
 
-	// fechar o entityManager
-	public static void fecharEntityManagerFactory() {
+	public static void fechaEntityManagerFactory() {
 
 		if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
 			entityManagerFactory.close();

@@ -41,7 +41,7 @@ public class MenuPrincipalController {
 				break;
 			default:
 
-				EntityManagerFactoryService.fecharEntityManagerFactory();
+				EntityManagerFactoryService.fechaEntityManagerFactory();
 				System.exit(0);
 			}
 		} while (opcaoMenuPrincipal != ConstantesMenuPrincipal.SAIR);

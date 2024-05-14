@@ -11,6 +11,6 @@ public class ConstantesMenuEstoque {
 	public static final String ATIVAR_NOTA_FICAL = "Gerador de notas fiscal";
 	public static final String LISTAGEM_VENDAS = "Listagem de Vendas";
 	public static final String DETALHES_VENDA = "Detalhes da Venda";
-	public static final String VOLTAR = "Voltar";
+	public static final String VOLTAR = "Voltar para Menu Principal";
 
 }

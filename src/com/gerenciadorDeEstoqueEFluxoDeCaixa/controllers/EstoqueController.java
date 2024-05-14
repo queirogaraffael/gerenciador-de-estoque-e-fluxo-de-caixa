@@ -76,9 +76,6 @@ public class EstoqueController {
 				case (ConstantesMenuEstoque.VOLTAR):
 					break;
 
-				default:
-					JOptionPane.showMessageDialog(null, "Opcao invalida. Tente outra!");
-					break;
 				}
 			} catch (NumberFormatException erro) {
 				JOptionPane.showMessageDialog(null,

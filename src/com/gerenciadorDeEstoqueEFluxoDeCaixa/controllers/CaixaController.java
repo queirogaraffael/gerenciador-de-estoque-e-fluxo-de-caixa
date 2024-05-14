@@ -75,9 +75,9 @@ public class CaixaController {
 					break;
 
 				}
-			} catch (NumberFormatException e) {
+			} catch (NumberFormatException erro) {
 				JOptionPane.showMessageDialog(null,
-						"Entrada invalida. Por favor, insira um numero correspondente a† op√ß√£o desejada.");
+						"Entrada invalida. Por favor, insira um numero correspondente a† opcao desejada.");
 			}
 
 		} while (!opcaoMenuFluxoDeCaixa.equals(ConstantesMenuFluxoCaixa.SAIR));

@@ -7,12 +7,15 @@ public class GerenciadorDeEstoqueView {
 
 		Object[] opcoesMenu = { "Cadastrar produto(s)", "Editar produto", "Listagem do estoque",
 				"Listar produtos com estoque baixo", "Listar Categorias", "Remoção de produto",
-				"Gerador de notas fiscal", "Listagem de Vendas", "Detalhes da Venda", "Voltar" };
+				"Gerador de notas fiscal", "Listagem de Vendas", "Detalhes da Venda", "Voltar para Menu Principal" };
 
-		Object opcaoSelecionada = JOptionPane.showInputDialog(null, "Escolha uma opcao", "Opcao",
+		Object opcaoSelecionada = JOptionPane.showInputDialog(null, "Escolha uma opcao", "Gerenciador de Estoque",
 				JOptionPane.INFORMATION_MESSAGE, null, opcoesMenu, opcoesMenu[0]);
 
-		return opcaoSelecionada.toString();
+		if (opcaoSelecionada != null) {
+			return opcaoSelecionada.toString();
+		}
+		return "";
 
 	}
 }

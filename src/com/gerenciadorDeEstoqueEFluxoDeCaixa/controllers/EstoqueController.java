@@ -7,20 +7,20 @@ import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuEstoque;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.NotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConfiguracaoNotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ManipulacaoData;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
 
-	public void gerenciadorEstoque() {
+	public void gerenciadorEstoque(NotaFiscal notaFiscal) {
 
 		String opcao = "";
 
@@ -60,7 +60,7 @@ public class EstoqueController {
 
 				case (ConstantesMenuEstoque.ATIVAR_NOTA_FICAL):
 
-					ativadorNotaFiscal();
+					ativadorNotaFiscal(notaFiscal);
 					break;
 
 				case (ConstantesMenuEstoque.LISTAGEM_VENDAS):
@@ -186,10 +186,10 @@ public class EstoqueController {
 		ProdutoService.removeProduto(codigoProdutoParaRemover);
 	}
 
-	private void ativadorNotaFiscal() {
+	private void ativadorNotaFiscal(NotaFiscal notaFiscal) {
 		Object[] opcoes = { "Sim", "Nao" };
 
-		String mensagem = ConfiguracaoNotaFiscal.getStatusNotaFiscal() ? "Deseja modificar o diretório?"
+		String mensagem = notaFiscal.getStatusNotaFiscal() ? "Deseja modificar o diretório?"
 				: "Ativar gerador de nota fiscal ?";
 
 		int opcao = JOptionPane.showOptionDialog(null, mensagem, "Opcoes", JOptionPane.DEFAULT_OPTION,
@@ -200,16 +200,16 @@ public class EstoqueController {
 
 			if (VerificaDiretorio.verificarDiretorio(path)) {
 
-				ConfiguracaoNotaFiscal.setCaminhoNotaFiscal(path);
-				ConfiguracaoNotaFiscal.setStatusNotaFiscal(true);
+				notaFiscal.setCaminhoNotaFiscal(path);
+				notaFiscal.setStatusNotaFiscal(true);
 
-				String msg = ConfiguracaoNotaFiscal.getStatusNotaFiscal()
+				String msg = notaFiscal.getStatusNotaFiscal()
 						? "Gerador de notas fiscais com novo diretório ativado com sucesso!"
 						: "Gerador de notas fiscais ativado com sucesso!";
 				JOptionPane.showMessageDialog(null, msg);
 			} else {
 
-				String msg = ConfiguracaoNotaFiscal.getStatusNotaFiscal()
+				String msg = notaFiscal.getStatusNotaFiscal()
 						? "Falha ao tentar ativar o novo diretorio do gerador de notas fiscais."
 						: "Falha ao tentar ativar gerador de notas fiscais.";
 				JOptionPane.showMessageDialog(null, msg);

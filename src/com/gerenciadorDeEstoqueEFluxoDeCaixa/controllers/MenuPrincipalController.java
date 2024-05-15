@@ -3,6 +3,7 @@ package com.gerenciadorDeEstoqueEFluxoDeCaixa.controllers;
 import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuPrincipal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.NotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
 
@@ -10,9 +11,12 @@ public class MenuPrincipalController {
 	private EstoqueController estoqueController;
 	private CaixaController caixaController;
 
+	private NotaFiscal notaFiscal;
+
 	public MenuPrincipalController() {
 		estoqueController = new EstoqueController();
 		caixaController = new CaixaController();
+		notaFiscal = new NotaFiscal();
 	}
 
 	public void exibirMenuPrincipal() {
@@ -30,14 +34,14 @@ public class MenuPrincipalController {
 				boolean autenticacao = AutenticadorDeSenha.autenticacaoSenha(senhaDigitada);
 
 				if (autenticacao) {
-					estoqueController.gerenciadorEstoque();
+					estoqueController.gerenciadorEstoque(notaFiscal);
 				} else {
 					JOptionPane.showMessageDialog(null, "Senha incorreta. Tente novamente!");
 				}
 
 				break;
 			case (ConstantesMenuPrincipal.FLUXO_CAIXA):
-				caixaController.fluxoDeCaixa();
+				caixaController.fluxoDeCaixa(notaFiscal);
 				break;
 			default:
 

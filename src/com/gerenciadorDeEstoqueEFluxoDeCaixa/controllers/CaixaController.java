@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuFluxoCaixa;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.NotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
@@ -15,13 +16,12 @@ import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ConfiguracaoNotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.GeradorNotaFiscal;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
 
 public class CaixaController {
 
-	public void fluxoDeCaixa() {
+	public void fluxoDeCaixa(NotaFiscal notaFiscal) {
 		String opcaoMenuFluxoDeCaixa = "";
 
 		Set<ItemVenda> listaCompras = new HashSet<>();
@@ -60,7 +60,7 @@ public class CaixaController {
 
 				case (ConstantesMenuFluxoCaixa.FINALIZAR_COMPRA):
 
-					finalizarCompra(listaCompras);
+					finalizarCompra(listaCompras, notaFiscal);
 					break;
 
 				case (ConstantesMenuFluxoCaixa.LIMPAR):
@@ -289,7 +289,7 @@ public class CaixaController {
 		}
 	}
 
-	private void finalizarCompra(Set<ItemVenda> listaCompras) {
+	private void finalizarCompra(Set<ItemVenda> listaCompras, NotaFiscal notaFiscal) {
 		if (!listaCompras.isEmpty()) {
 
 			Venda venda = new Venda();
@@ -309,8 +309,8 @@ public class CaixaController {
 
 			VendaService.atualizaVenda(venda);
 
-			if (ConfiguracaoNotaFiscal.getStatusNotaFiscal()) {
-				GeradorNotaFiscal.geradorNotaFiscal(venda, listaCompras, ConfiguracaoNotaFiscal.getCaminhoNotaFiscal());
+			if (notaFiscal.getStatusNotaFiscal()) {
+				GeradorNotaFiscal.geradorNotaFiscal(venda, listaCompras, notaFiscal.getCaminhoNotaFiscal());
 			}
 
 			listaCompras.clear();

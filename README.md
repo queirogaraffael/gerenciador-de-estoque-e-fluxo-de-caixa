@@ -1,6 +1,6 @@
 # Gerenciador de Estoque e Fluxo de Caixa
 
-Este é um projeto de um sistema de gerenciamento de estoque e fluxo de caixa desenvolvido em Java, com foco principalmente no backend. O sistema permite o cadastro, edição, remoção e listagem de produtos no estoque, além de fornecer funcionalidades de controle de vendas e fluxo de caixa.
+Este é um projeto de um sistema de gerenciamento de estoque e fluxo de caixa desenvolvido em Java. O sistema permite o cadastro, edição, remoção e listagem de produtos no estoque, além de fornecer funcionalidades de controle de vendas e fluxo de caixa.
 
 ## Funcionalidades:
 
@@ -51,4 +51,4 @@ Este é um projeto de um sistema de gerenciamento de estoque e fluxo de caixa de
 Contribuições são bem-vindas! Sinta-se à vontade para propor melhorias e reportar problemas do projeto.
 
 ## Licença
-Este projeto está licenciado sob a Licença MIT.
+Este projeto está licenciado sob a [Licença MIT](https://github.com/queirogaraffael/Inventory-managing-cash-register-system/blob/main/LICENSE).

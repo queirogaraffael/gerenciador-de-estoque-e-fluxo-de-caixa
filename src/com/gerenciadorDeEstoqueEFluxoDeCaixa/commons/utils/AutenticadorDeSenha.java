@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.utils;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils;
 
 public class AutenticadorDeSenha {
 	private static final String SENHA = "senha123";

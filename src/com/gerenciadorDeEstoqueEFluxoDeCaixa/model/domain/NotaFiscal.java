@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.model.domain;
 
 public class NotaFiscal {
 

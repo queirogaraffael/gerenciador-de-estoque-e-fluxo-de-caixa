@@ -6,22 +6,39 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuFluxoCaixa;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.NotaFiscal;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.AutenticadorDeSenha;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.GeradorNotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.constantes.ConstantesMenuFluxoCaixa;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils.AutenticadorDeSenha;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils.GeradorNotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.CategoriaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.ItemVendaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.ProdutoDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.VendaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.domain.NotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.ItemVenda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Produto;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.service.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.FluxoDeCaixaView;
 
 public class CaixaController {
 
-	public void fluxoDeCaixa(NotaFiscal notaFiscal) {
+	private NotaFiscal notaFiscal;
+	private CategoriaDao categoriaDao;
+	private ItemVendaDao itemVendaDao;
+	private ProdutoDao produtoDao;
+	private VendaDao vendaDao;
+
+	public CaixaController(NotaFiscal notaFiscal, CategoriaDao categoriaDao, ItemVendaDao itemVendaDao,
+			ProdutoDao produtoDao, VendaDao vendaDao) {
+		this.notaFiscal = notaFiscal;
+		this.categoriaDao = categoriaDao;
+		this.itemVendaDao = itemVendaDao;
+		this.produtoDao = produtoDao;
+		this.vendaDao = vendaDao;
+	}
+
+	public void fluxoDeCaixa() {
+
 		String opcaoMenuFluxoDeCaixa = "";
 
 		Set<ItemVenda> listaCompras = new HashSet<>();
@@ -94,7 +111,7 @@ public class CaixaController {
 
 			ItemVenda prod = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras, codigoProduto);
 
-			Produto produtoEstoque = ProdutoService.retornaProdutoPorCodigo(codigoProduto);
+			Produto produtoEstoque = produtoDao.retornaProdutoPorCodigo(codigoProduto);
 
 			int quantidadeRealProduto = prod.getQuantidade() + produtoEstoque.getQuantidade();
 
@@ -103,7 +120,7 @@ public class CaixaController {
 				prod.setQuantidade(novaQuantidade);
 				produtoEstoque.setQuantidade(quantidadeRealProduto - novaQuantidade);
 
-				ProdutoService.atualizaProduto(produtoEstoque);
+				produtoDao.atualizaProduto(produtoEstoque);
 
 			} else if (quantidadeRealProduto <= 0) {
 				JOptionPane.showMessageDialog(null, "Produto indisponivel. Tente outro!");
@@ -122,7 +139,7 @@ public class CaixaController {
 					prod.setQuantidade(quantidadeRealProduto);
 					produtoEstoque.setQuantidade(0);
 
-					ProdutoService.atualizaProduto(produtoEstoque);
+					produtoDao.atualizaProduto(produtoEstoque);
 
 				} else {
 					JOptionPane.showMessageDialog(null, "Compra de produto cancelada.");
@@ -131,7 +148,7 @@ public class CaixaController {
 
 		} else {
 
-			Produto produto = ProdutoService.retornaProdutoPorCodigo(codigoProduto);
+			Produto produto = produtoDao.retornaProdutoPorCodigo(codigoProduto);
 
 			if (produto != null) {
 				Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade: "));
@@ -144,7 +161,7 @@ public class CaixaController {
 
 					produto.setQuantidade(produto.getQuantidade() - quantidade);
 
-					ProdutoService.atualizaProduto(produto);
+					produtoDao.atualizaProduto(produto);
 
 				} else if (produto.getQuantidade() == 0) {
 					JOptionPane.showMessageDialog(null, "Quantidade em estoque do produto igual a 0. Tente outro!");
@@ -165,7 +182,7 @@ public class CaixaController {
 						listaCompras.add(item);
 
 						produto.setQuantidade(0);
-						ProdutoService.atualizaProduto(produto);
+						produtoDao.atualizaProduto(produto);
 
 					} else {
 						JOptionPane.showMessageDialog(null, "Compra de produto cancelada.");
@@ -192,13 +209,13 @@ public class CaixaController {
 
 	private void listarEstoque() {
 
-		if (ProdutoService.tabelaProdutoEstaVazia()) {
+		if (produtoDao.tabelaProdutoEstaVazia()) {
 			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
 		} else {
 
-			int categoria = CategoriaService.retornaIdCategoria();
+			int categoria = categoriaDao.retornaIdCategoria();
 
-			String resultado = ProdutoService.geraRelatotioProdutos(categoria);
+			String resultado = produtoDao.geraRelatotioProdutos(categoria);
 
 			JOptionPane.showMessageDialog(null, resultado);
 		}
@@ -222,12 +239,12 @@ public class CaixaController {
 				ItemVenda ItemListaCompras = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras,
 						codigoProdutoParaRemover);
 
-				Produto produtoDoEstoque = ProdutoService.retornaProdutoPorCodigo(codigoProdutoParaRemover);
+				Produto produtoDoEstoque = produtoDao.retornaProdutoPorCodigo(codigoProdutoParaRemover);
 				int quantidadeRealProduto = ItemListaCompras.getQuantidade() + produtoDoEstoque.getQuantidade();
 
 				produtoDoEstoque.setQuantidade(quantidadeRealProduto);
 
-				ProdutoService.atualizaProduto(produtoDoEstoque);
+				produtoDao.atualizaProduto(produtoDoEstoque);
 				listaCompras.remove(ItemListaCompras);
 
 				JOptionPane.showMessageDialog(null, "Produto removida com sucesso!");
@@ -247,7 +264,7 @@ public class CaixaController {
 
 				ItemVenda prod = ItemVendaService.retornaItemVendaPeloCodigo(listaCompras, codigo);
 
-				Produto produtoEstoque = ProdutoService.retornaProdutoPorCodigo(codigo);
+				Produto produtoEstoque = produtoDao.retornaProdutoPorCodigo(codigo);
 
 				int quantidadeRealProduto = prod.getQuantidade() + produtoEstoque.getQuantidade();
 
@@ -256,7 +273,7 @@ public class CaixaController {
 					prod.setQuantidade(novaQuantidade);
 					produtoEstoque.setQuantidade(quantidadeRealProduto - novaQuantidade);
 
-					ProdutoService.atualizaProduto(produtoEstoque);
+					produtoDao.atualizaProduto(produtoEstoque);
 
 				} else if (quantidadeRealProduto <= 0) {
 					JOptionPane.showMessageDialog(null, "Produto indisponivel. Tente outro!");
@@ -275,7 +292,7 @@ public class CaixaController {
 						prod.setQuantidade(quantidadeRealProduto);
 						produtoEstoque.setQuantidade(0);
 
-						ProdutoService.atualizaProduto(produtoEstoque);
+						produtoDao.atualizaProduto(produtoEstoque);
 
 					} else {
 						JOptionPane.showMessageDialog(null, "Compra de produto cancelada.");
@@ -295,19 +312,19 @@ public class CaixaController {
 			Venda venda = new Venda();
 			venda.setDataHora(LocalDateTime.now());
 
-			VendaService.adicionaVenda(venda);
+			vendaDao.adicionaVenda(venda);
 
 			Double total = 0.0;
 
 			for (ItemVenda itemVenda : listaCompras) {
 				itemVenda.setVenda(venda);
 				total += itemVenda.subTotal();
-				ItemVendaService.adicionaItemVenda(itemVenda);
+				itemVendaDao.adicionaItemVenda(itemVenda);
 			}
 
 			venda.setTotal(total);
 
-			VendaService.atualizaVenda(venda);
+			vendaDao.atualizaVenda(venda);
 
 			if (notaFiscal.getStatusNotaFiscal()) {
 				GeradorNotaFiscal.geradorNotaFiscal(venda, listaCompras, notaFiscal.getCaminhoNotaFiscal());
@@ -323,13 +340,13 @@ public class CaixaController {
 		if (!listaCompras.isEmpty()) {
 			for (ItemVenda item : listaCompras) {
 
-				Produto produtoEmEstoque = ProdutoService.retornaProdutoPorCodigo(item.getProduto().getcodigoDeBarra());
+				Produto produtoEmEstoque = produtoDao.retornaProdutoPorCodigo(item.getProduto().getcodigoDeBarra());
 
 				int quantidadeReal = item.getQuantidade() + produtoEmEstoque.getQuantidade();
 
 				produtoEmEstoque.setQuantidade(quantidadeReal);
 
-				ProdutoService.atualizaProduto(produtoEmEstoque);
+				produtoDao.atualizaProduto(produtoEmEstoque);
 
 			}
 			listaCompras.clear();

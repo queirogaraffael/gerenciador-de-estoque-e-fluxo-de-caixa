@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.constantes;
 
 public class ConstantesMenuFluxoCaixa {
 

@@ -5,25 +5,38 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.constantes.ConstantesMenuEstoque;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.NotaFiscal;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.CategoriaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ProdutoService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.VendaService;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.ManipulacaoData;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.VerificaDiretorio;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.constantes.ConstantesMenuEstoque;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils.ManipulacaoData;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils.VerificaDiretorio;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.CategoriaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.ItemVendaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.ProdutoDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.VendaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.domain.NotaFiscal;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.ItemVenda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Produto;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.service.ItemVendaService;
 import com.gerenciadorDeEstoqueEFluxoDeCaixa.views.GerenciadorDeEstoqueView;
 
 public class EstoqueController {
+	private NotaFiscal notaFiscal;
+	private CategoriaDao categoriaDao;
+	private ItemVendaDao itemVendaDao;
+	private ProdutoDao produtoDao;
+	private VendaDao vendaDao;
 
-	public void gerenciadorEstoque(NotaFiscal notaFiscal) {
+	public EstoqueController(NotaFiscal notaFiscal, CategoriaDao categoriaDao, ItemVendaDao itemVendaDao,
+			ProdutoDao produtoDao, VendaDao vendaDao) {
+		this.notaFiscal = notaFiscal;
+		this.categoriaDao = categoriaDao;
+		this.itemVendaDao = itemVendaDao;
+		this.produtoDao = produtoDao;
+		this.vendaDao = vendaDao;
+	}
 
+	public void gerenciadorEstoque() {
 		String opcao = "";
-
 		do {
 			try {
 				opcao = GerenciadorDeEstoqueView.exibirMenuGerenciadorDeEstoque();
@@ -89,7 +102,7 @@ public class EstoqueController {
 
 		String codigoBarra = JOptionPane.showInputDialog("Digite o codigo de barra do produto: ");
 
-		if (ProdutoService.retornaProdutoPorCodigo(codigoBarra) != null) {
+		if (produtoDao.retornaProdutoPorCodigo(codigoBarra) != null) {
 			JOptionPane.showMessageDialog(null, "Produto ja cadastrado anteriormente.");
 		} else {
 
@@ -97,9 +110,9 @@ public class EstoqueController {
 			Double valor = Double.parseDouble(JOptionPane.showInputDialog("Valor do produto: "));
 			Integer quantidade = Integer.parseInt(JOptionPane.showInputDialog("Quantidade do produto: "));
 
-			int categoria = CategoriaService.retornaIdCategoria();
+			int categoria = categoriaDao.retornaIdCategoria();
 
-			ProdutoService.adicionaProduto(new Produto(codigoBarra, nome, valor, quantidade, categoria));
+			produtoDao.adicionaProduto(new Produto(codigoBarra, nome, valor, quantidade, categoria));
 
 		}
 
@@ -115,26 +128,26 @@ public class EstoqueController {
 		if (opcaoEditar != 4) {
 			String codigo = JOptionPane.showInputDialog("Digite o codigo do produto: ");
 
-			Produto produto = ProdutoService.retornaProdutoPorCodigo(codigo);
+			Produto produto = produtoDao.retornaProdutoPorCodigo(codigo);
 
-			if (ProdutoService.retornaProdutoPorCodigo(codigo) != null) {
+			if (produtoDao.retornaProdutoPorCodigo(codigo) != null) {
 				if (opcaoEditar == 0) {
 					String novoNome = JOptionPane.showInputDialog("Digite o novo nome: ");
 					produto.setNome(novoNome);
-					ProdutoService.atualizaProduto(produto);
+					produtoDao.atualizaProduto(produto);
 				} else if (opcaoEditar == 1) {
 					Double novoPreco = Double.valueOf(JOptionPane.showInputDialog("Digite o novo preco: "));
 					produto.setpreco(novoPreco);
-					ProdutoService.atualizaProduto(produto);
+					produtoDao.atualizaProduto(produto);
 				} else if (opcaoEditar == 2) {
 					Integer novaQuantidade = Integer
 							.parseInt(JOptionPane.showInputDialog("Digite a nova quantidade: "));
 					produto.setQuantidade(novaQuantidade);
-					ProdutoService.atualizaProduto(produto);
+					produtoDao.atualizaProduto(produto);
 				} else if (opcaoEditar == 3) {
 					Integer novaCategoria = Integer.parseInt(JOptionPane.showInputDialog("Digite a nova categoria: "));
 					produto.setCategoria(novaCategoria);
-					ProdutoService.atualizaProduto(produto);
+					produtoDao.atualizaProduto(produto);
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "Produto nao cadastrado ainda. Tente outro!");
@@ -145,13 +158,13 @@ public class EstoqueController {
 
 	private void listarProdutos() {
 
-		if (ProdutoService.tabelaProdutoEstaVazia()) {
+		if (produtoDao.tabelaProdutoEstaVazia()) {
 			JOptionPane.showMessageDialog(null, "Lista de produtos vazia.");
 		} else {
 
-			int categoria = CategoriaService.retornaIdCategoria();
+			int categoria = categoriaDao.retornaIdCategoria();
 
-			String resultado = ProdutoService.geraRelatotioProdutos(categoria);
+			String resultado = produtoDao.geraRelatotioProdutos(categoria);
 
 			JOptionPane.showMessageDialog(null, resultado);
 		}
@@ -160,7 +173,7 @@ public class EstoqueController {
 
 	private void listaProdutosEstoqueBaixo() {
 
-		String resultado = ProdutoService.geraRelatorioProdutosEstoqueBaixo();
+		String resultado = produtoDao.geraRelatorioProdutosEstoqueBaixo();
 
 		if (resultado.equals("")) {
 			JOptionPane.showMessageDialog(null, "Sem produtos com baixo estoque!");
@@ -172,7 +185,7 @@ public class EstoqueController {
 
 	private void listarCategorias() {
 
-		Object resultado = CategoriaService.categorias();
+		Object resultado = categoriaDao.categorias();
 
 		JOptionPane.showMessageDialog(null, resultado);
 
@@ -183,7 +196,7 @@ public class EstoqueController {
 		String codigoProdutoParaRemover = JOptionPane
 				.showInputDialog("Digite o codigo do produto que voce deseja remover:");
 
-		ProdutoService.removeProduto(codigoProdutoParaRemover);
+		produtoDao.removeProduto(codigoProdutoParaRemover);
 	}
 
 	private void ativadorNotaFiscal(NotaFiscal notaFiscal) {
@@ -222,7 +235,7 @@ public class EstoqueController {
 
 	private void listarVendas() {
 
-		if (!VendaService.tabelaVendaEstaVazia()) {
+		if (!vendaDao.tabelaVendaEstaVazia()) {
 
 			Object[] opcoes = { "Listar todas as vendas", "Listar venda por data especifica", "Voltar" };
 
@@ -231,7 +244,7 @@ public class EstoqueController {
 
 			if (opcaoListagem == 0) {
 
-				String resultadoListagemVendas = VendaService.geraRelatioVendas();
+				String resultadoListagemVendas = vendaDao.geraRelatioVendas();
 				JOptionPane.showMessageDialog(null, resultadoListagemVendas);
 
 			} else if (opcaoListagem == 1) {
@@ -245,7 +258,7 @@ public class EstoqueController {
 					LocalDate data = ManipulacaoData.retornaLocalDate(dataString);
 					if (!ManipulacaoData.verificaSeADataEPosterior(dataString)) {
 
-						String resultadoListagemVendasPorData = VendaService.geraRelatiorioVendasPorData(data);
+						String resultadoListagemVendasPorData = vendaDao.geraRelatiorioVendasPorData(data);
 
 						if (resultadoListagemVendasPorData.equals("")) {
 							JOptionPane.showMessageDialog(null, "Sem resultado de vendas para esta data");
@@ -268,14 +281,14 @@ public class EstoqueController {
 	}
 
 	private void detalharVenda() {
-		if (!VendaService.tabelaVendaEstaVazia()) {
+		if (!vendaDao.tabelaVendaEstaVazia()) {
 
 			Integer codigo = Integer.parseInt(JOptionPane.showInputDialog("Codigo de venda: "));
-			Venda venda = VendaService.retornaVendaPorCodigo(codigo);
+			Venda venda = vendaDao.retornaVendaPorCodigo(codigo);
 
 			if (venda != null) {
 
-				Set<ItemVenda> itens = ItemVendaService.retornaItensVenda(venda);
+				Set<ItemVenda> itens = itemVendaDao.retornaItensVenda(venda);
 
 				String itensVenda = ItemVendaService.geraRelatorioItemVenda(itens);
 

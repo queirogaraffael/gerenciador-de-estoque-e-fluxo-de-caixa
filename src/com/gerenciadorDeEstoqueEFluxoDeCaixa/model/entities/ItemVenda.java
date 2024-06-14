@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.pk.ItemVendaPK;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.pk.ItemVendaPK;
 
 @Entity
 @Table(name = "itemVenda")

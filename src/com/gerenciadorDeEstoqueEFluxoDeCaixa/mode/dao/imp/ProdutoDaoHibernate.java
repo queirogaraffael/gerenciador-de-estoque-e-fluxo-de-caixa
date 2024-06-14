@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.imp;
 
 import java.util.List;
 
@@ -6,14 +6,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.ProdutoDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Produto;
 
-public class ProdutoService {
+public class ProdutoDaoHibernate implements ProdutoDao {
 
-	private static EntityManagerFactory entityManagerFactory = EntityManagerFactoryService.entityManagerFactory();
+	private EntityManagerFactory entityManagerFactory;
 
-	public static void adicionaProduto(Produto produto) {
+	public ProdutoDaoHibernate(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+	}
+
+	public void adicionaProduto(Produto produto) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -29,7 +33,7 @@ public class ProdutoService {
 
 	}
 
-	public static void atualizaProduto(Produto produto) {
+	public void atualizaProduto(Produto produto) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -45,7 +49,7 @@ public class ProdutoService {
 
 	}
 
-	public static void removeProduto(String codigo) {
+	public void removeProduto(String codigo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -67,7 +71,7 @@ public class ProdutoService {
 
 	}
 
-	public static Produto retornaProdutoPorCodigo(String codigo) {
+	public Produto retornaProdutoPorCodigo(String codigo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 
 		try {
@@ -82,7 +86,7 @@ public class ProdutoService {
 		}
 	}
 
-	public static String geraRelatotioProdutos(Integer categoria) {
+	public String geraRelatotioProdutos(Integer categoria) {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -108,7 +112,7 @@ public class ProdutoService {
 		return "";
 	}
 
-	public static boolean tabelaProdutoEstaVazia() {
+	public boolean tabelaProdutoEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 
@@ -132,7 +136,7 @@ public class ProdutoService {
 
 	}
 
-	public static String geraRelatorioProdutosEstoqueBaixo() {
+	public String geraRelatorioProdutosEstoqueBaixo() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();

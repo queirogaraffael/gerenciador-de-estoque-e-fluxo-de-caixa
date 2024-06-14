@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.utils;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.hibernateConnection;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

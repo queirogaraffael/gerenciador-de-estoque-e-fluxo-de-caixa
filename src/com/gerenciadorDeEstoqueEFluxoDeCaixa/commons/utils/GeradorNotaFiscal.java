@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.utils;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.commons.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,9 +8,9 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.ItemVenda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.services.ItemVendaService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.ItemVenda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.service.ItemVendaService;
 
 public class GeradorNotaFiscal {
 

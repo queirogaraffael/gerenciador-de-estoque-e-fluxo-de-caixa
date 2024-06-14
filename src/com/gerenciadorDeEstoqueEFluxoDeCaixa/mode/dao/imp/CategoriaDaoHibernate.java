@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.imp;
 
 import java.util.List;
 
@@ -6,14 +6,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Categoria;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.CategoriaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Categoria;
 
-public class CategoriaService {
+public class CategoriaDaoHibernate implements CategoriaDao {
 
-	private static EntityManagerFactory entityManagerFactory = EntityManagerFactoryService.entityManagerFactory();
+	private EntityManagerFactory entityManagerFactory;
 
-	public static Object[] categorias() {
+	public CategoriaDaoHibernate(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+	}
+
+	public Object[] categorias() {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -37,20 +41,7 @@ public class CategoriaService {
 
 	}
 
-	public static Integer retornaIdCategoria() {
-
-		Object[] categorias = CategoriaService.categorias();
-
-		Object resultadoCategoria = JOptionPane.showInputDialog(null, "Escolha uma categoria", "Categorias",
-				JOptionPane.INFORMATION_MESSAGE, null, categorias, categorias[0]);
-
-		String[] categoriaDado = resultadoCategoria.toString().split(" - ");
-
-		int categoria = Integer.parseInt(categoriaDado[0]);
-		return categoria;
-	}
-
-	public static void adicionarCategoriasSeNaoTiverAinda() {
+	public void adicionarCategoriasSeNaoTiverAinda() {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -80,4 +71,16 @@ public class CategoriaService {
 
 	}
 
+	public Integer retornaIdCategoria() {
+
+		Object[] categorias = categorias();
+
+		Object resultadoCategoria = JOptionPane.showInputDialog(null, "Escolha uma categoria", "Categorias",
+				JOptionPane.INFORMATION_MESSAGE, null, categorias, categorias[0]);
+
+		String[] categoriaDado = resultadoCategoria.toString().split(" - ");
+
+		int categoria = Integer.parseInt(categoriaDado[0]);
+		return categoria;
+	}
 }

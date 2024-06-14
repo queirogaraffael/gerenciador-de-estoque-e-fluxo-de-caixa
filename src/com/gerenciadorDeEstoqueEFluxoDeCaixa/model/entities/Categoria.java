@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.services;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.imp;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -8,13 +8,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JOptionPane;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.utils.EntityManagerFactoryService;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.mode.dao.VendaDao;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Venda;
 
-public class VendaService {
-	private static EntityManagerFactory entityManagerFactory = EntityManagerFactoryService.entityManagerFactory();
+public class VendaDaoHibernate implements VendaDao {
 
-	public static void adicionaVenda(Venda venda) {
+	private EntityManagerFactory entityManagerFactory;
+
+	public VendaDaoHibernate(EntityManagerFactory entityManagerFactory) {
+		this.entityManagerFactory = entityManagerFactory;
+	}
+
+	public void adicionaVenda(Venda venda) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -30,7 +35,7 @@ public class VendaService {
 
 	}
 
-	public static void atualizaVenda(Venda venda) {
+	public void atualizaVenda(Venda venda) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
@@ -46,7 +51,7 @@ public class VendaService {
 
 	}
 
-	public static Venda retornaVendaPorCodigo(Integer codigo) {
+	public Venda retornaVendaPorCodigo(Integer codigo) {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 
 		try {
@@ -61,7 +66,7 @@ public class VendaService {
 		}
 	}
 
-	public static String geraRelatioVendas() {
+	public String geraRelatioVendas() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -86,7 +91,7 @@ public class VendaService {
 
 	}
 
-	public static boolean tabelaVendaEstaVazia() {
+	public boolean tabelaVendaEstaVazia() {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
@@ -109,7 +114,7 @@ public class VendaService {
 
 	}
 
-	public static String geraRelatiorioVendasPorData(LocalDate data) {
+	public String geraRelatiorioVendasPorData(LocalDate data) {
 
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();

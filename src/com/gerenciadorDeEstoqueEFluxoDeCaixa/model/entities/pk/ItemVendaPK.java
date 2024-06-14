@@ -1,4 +1,4 @@
-package com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.pk;
+package com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.pk;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -7,8 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Produto;
-import com.gerenciadorDeEstoqueEFluxoDeCaixa.entities.Venda;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Produto;
+import com.gerenciadorDeEstoqueEFluxoDeCaixa.model.entities.Venda;
 
 @Embeddable
 public class ItemVendaPK implements Serializable {
